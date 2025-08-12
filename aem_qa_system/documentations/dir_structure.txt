@@ -1,0 +1,50 @@
+.
+├── aem_qa_system.egg-info
+│   ├── PKG-INFO
+│   ├── SOURCES.txt
+│   ├── dependency_links.txt
+│   └── top_level.txt
+├── data
+│   ├── 1_input
+│   ├── 2_downloaded
+│   └── 3_processed
+├── dir_structure.txt
+├── docker-compose.yml
+├── logs
+├── notebooks
+│   ├── 0_utilities.ipynb
+│   ├── 1_process_linguist_assets.ipynb
+│   ├── 2_setup_batches.ipynb
+│   ├── 3_run_collection_multilingual.ipynb
+│   ├── 4_run_processing.ipynb
+│   ├── 5_run_qa_analysis.ipynb
+│   ├── 6_build_final_tm.ipynb
+│   ├── 7_analyze_structure_diff.ipynb
+│   ├── 8_create_chroma_index.ipynb
+│   ├── 9_test_chroma_search.ipynb
+│   ├── _3_run_collection.ipynb
+│   ├── _3b_extract_pdf_pairs.ipynb
+│   ├── _3b_extract_pdf_pairs_multilingual.ipynb
+│   ├── _3c_extract_pdf_pairs_with_llm.ipynb
+│   ├── _3d_extract_pdf_pairs_hybrid.ipynb
+│   ├── _pdf_download_test.ipynb
+│   └── tests
+├── rag_database
+│   └── chroma_db_store
+├── reports
+│   ├── page_structure_diff.csv
+│   ├── page_structure_diff_en_ja.csv
+│   ├── untranslated_en_ja.csv
+│   └── untranslated_en_ko.csv
+├── requirements.txt
+├── setup.py
+└── src
+    ├── __pycache__
+    ├── analyzers
+    ├── collectors
+    ├── config.py
+    ├── indexing
+    ├── processors
+    └── utils
+
+19 directories, 29 files

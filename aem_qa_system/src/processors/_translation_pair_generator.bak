@@ -1,0 +1,134 @@
+# src/processors/translation_pair_generator.py
+
+import numpy as np
+from pathlib import Path
+from typing import List, Dict
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+from langdetect import detect
+import re
+
+from src.config import RAG_EMBEDDING_MODEL
+
+
+class TranslationPairGenerator:
+    """임베딩 유사도를 사용하여 번역 쌍을 생성하는 클래스"""
+
+    def __init__(self, similarity_threshold: float = 0.6, allow_multiple_matches: bool = False):
+        self.similarity_threshold = similarity_threshold
+        self.allow_multiple_matches = allow_multiple_matches
+        self.embedding_model = None
+
+    def load_embedding_model(self):
+        """임베딩 모델을 로드합니다."""
+        print("🤖 임베딩 모델을 로드하는 중...")
+        self.embedding_model = SentenceTransformer(RAG_EMBEDDING_MODEL)
+        print("✅ 임베딩 모델 로드 완료.")
+
+    def generate_pairs(
+        self,
+        source_segments: List[str],
+        target_segments: List[str],
+        target_pdf_path: str,
+        source_lang: str = 'en',
+        target_lang: str = 'ja'
+    ) -> List[Dict]:
+        """소스와 타겟 언어 세그먼트에서 번역 쌍을 생성합니다."""
+        if not self.embedding_model:
+            self.load_embedding_model()
+
+        if not source_segments or not target_segments:
+            return []
+
+        # 언어별 전처리
+        source_segments = self._preprocess_segments(source_segments, source_lang)
+        target_segments = self._preprocess_segments(target_segments, target_lang)
+
+        # 세그먼트 길이 정규화
+        source_segments = self._normalize_segments(source_segments)
+        target_segments = self._normalize_segments(target_segments)
+
+        # 임베딩 계산
+        source_embeddings = self._compute_embeddings(source_segments)
+        target_embeddings = self._compute_embeddings(target_segments)
+
+        # 유사도 매칭
+        return self._match_by_similarity(
+            source_segments, target_segments,
+            source_embeddings, target_embeddings,
+            target_pdf_path, source_lang, target_lang
+        )
+
+    def _compute_embeddings(self, segments: List[str]) -> np.ndarray:
+        """텍스트 세그먼트들의 임베딩을 계산합니다."""
+        return self.embedding_model.encode(segments, show_progress_bar=False)
+
+    def _match_by_similarity(
+        self,
+        source_segments: List[str],
+        target_segments: List[str],
+        source_embeddings: np.ndarray,
+        target_embeddings: np.ndarray,
+        target_pdf_path: str,
+        source_lang: str,
+        target_lang: str
+    ) -> List[Dict]:
+        """유사도 기반으로 번역 쌍을 매칭합니다."""
+        pairs = []
+        target_filename = Path(target_pdf_path).name
+        used_target_indices = set()
+
+        for i, source_segment in enumerate(source_segments):
+            similarities = cosine_similarity([source_embeddings[i]], target_embeddings)[0]
+            best_idx = int(np.argmax(similarities))
+            best_similarity = float(similarities[best_idx])
+
+            if best_similarity >= self.similarity_threshold and (
+                self.allow_multiple_matches or best_idx not in used_target_indices
+            ):
+                pairs.append({
+                    'source_text': source_segment.strip(),
+                    'target_text': target_segments[best_idx].strip(),
+                    'similarity_score': round(best_similarity, 4),
+                    'source_file': target_filename,
+                    'source_lang': source_lang,
+                    'target_lang': target_lang,
+                    'pair_type': 'pdf_extracted'
+                })
+
+                used_target_indices.add(best_idx)
+
+        return pairs
+
+    def _normalize_segments(self, segments: List[str], min_len: int = 5, max_len: int = 512) -> List[str]:
+        """세그먼트 길이 정규화"""
+        return [seg for seg in segments if min_len <= len(seg) <= max_len]
+
+    def _preprocess_segments(self, segments: List[str], lang: str) -> List[str]:
+        """언어별 세그먼트 전처리"""
+        if lang == 'ja':
+            return self._split_japanese_sentences(" ".join(segments))
+        return segments
+
+    # def _split_japanese_sentences(self, text: str) -> List[str]:
+    #     """일본어 문장을 의미 단위로 분할"""
+    #     raw_segments = re.split(r'[。！？]', text)
+    #     return [seg.strip() for seg in raw_segments if seg.strip()]
+    
+    def _split_japanese_sentences(self, text: str) -> List[str]:
+        """일본어 문장을 의미 단위로 분할 (LLM 기반)"""
+        try:
+            from src.processors.pdf_text_extractor import llama3_generate
+        except ImportError:
+            print("⚠️ llama3_generate 함수 로드 실패. 기본 분할 방식 사용.")
+            return re.split(r'[。！？]', text)
+
+        prompt = f"""以下の日本語テキストを意味のある単位で分割してください。各セグメントは1〜2文程度で、改行で区切ってください。
+
+    {text}
+    """
+        response = llama3_generate(prompt)
+        segments = [line.strip("-•● ") for line in response.split("\n") if line.strip()]
+
+        return [s for s in segments if len(s) > 5]
+
