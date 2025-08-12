@@ -1,0 +1,518 @@
+import streamlit as st
+import pandas as pd
+import io
+from typing import List, Dict
+from modules.connections import get_db
+from modules.analyzer import PageAnalyzer, get_text_changes_only
+from modules.searcher import TranslationSearcher, format_recommendation_for_display
+
+# 페이지 설정
+st.set_page_config(
+    page_title="AEM 번역 QA 워크스테이션",
+    page_icon="🔍",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# 메인 제목
+st.title("🔍 AEM 번역 QA 워크스테이션")
+st.markdown("**AI 기반 페이지 변경사항 분석 및 번역 추천 시스템**")
+
+def build_aem_url(page_path: str, version: str, host: str = "https://prod-author.illumina.com") -> str:
+    """AEM Author 편집 페이지 URL을 생성합니다."""
+    # 페이지 경로 정리 (aem_collector.py 로직 참조)
+    clean_path = clean_page_path(page_path)
+    
+    path_templates = {
+        # 영어
+        "lm-en": f"/content/illumina-marketing/language-master/en{clean_path}.html",
+        
+        # 한국어
+        "lm-ko": f"/content/illumina-marketing/language-master/ko{clean_path}.html",
+        "spac-ko_KR": f"/content/illumina-marketing/spac/ko_KR{clean_path}.html",
+        
+        # 일본어 (나중에 사용)
+        "lm-ja": f"/content/illumina-marketing/language-master/ja{clean_path}.html",
+        "apac-ja_JP": f"/content/illumina-marketing/apac/ja_JP{clean_path}.html"
+    }
+    
+    url_path = path_templates.get(version, "")
+    if not url_path:
+        return ""
+    
+    # AEM Author 편집 URL: host/editor.html + content_path
+    return f"{host}/editor.html{url_path}"
+
+def clean_page_path(page_path: str) -> str:
+    """페이지 경로를 표준 형식으로 정제합니다."""
+    clean_path = page_path.strip()
+    
+    # 다양한 접두사 제거
+    prefixes_to_remove = [
+        '/content/illumina-marketing/language-master/en',
+        '/content/illumina-marketing/language-master/ko',
+        '/content/illumina-marketing/spac/ko_KR',
+        '/content/illumina-marketing/en',
+        '/content/illumina-marketing/apac/en',
+        '/content/illumina-marketing/apac/ja_JP'
+    ]
+    
+    for prefix in prefixes_to_remove:
+        if clean_path.startswith(prefix):
+            clean_path = clean_path[len(prefix):]
+            break
+    
+    if not clean_path.startswith('/'):
+        return '/' + clean_path
+    return clean_path
+
+def show_detailed_analysis(page_path: str):
+    """선택된 페이지의 상세 분석을 표시합니다."""
+    st.subheader(f"🔍 상세 분석: {page_path}")
+    
+    # 강제로 링크 섹션 표시 (테스트)
+    st.write("---")
+    st.write("🔗 **AEM 편집 페이지 링크**")
+    st.write("테스트: 이 텍스트가 보이나요?")
+    
+    # AEM URL 링크 생성
+    source_url = build_aem_url(page_path, "lm-en")
+    lm_ko_url = build_aem_url(page_path, "lm-ko")
+    spac_ko_url = build_aem_url(page_path, "spac-ko_KR")
+    
+    # URL 직접 출력해서 확인
+    st.write(f"Source URL: {source_url}")
+    st.write(f"LM-KO URL: {lm_ko_url}")
+    st.write(f"SPAC-KO URL: {spac_ko_url}")
+    
+    # 3개 컬럼으로 배치
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.write("**소스 (원문)**")
+        if source_url:
+            st.markdown(f"[📝 lm-en 편집]({source_url})")
+        else:
+            st.write("❌ URL 생성 실패")
+    
+    with col2:
+        st.write("**타겟 (Language Master)**")
+        if lm_ko_url:
+            st.markdown(f"[📝 lm-ko 편집]({lm_ko_url})")
+        else:
+            st.write("❌ URL 생성 실패")
+    
+    with col3:
+        st.write("**타겟 (SPAC Site)**")
+        if spac_ko_url:
+            st.markdown(f"[📝 spac-ko_KR 편집]({spac_ko_url})")
+        else:
+            st.write("❌ URL 생성 실패")
+    
+    st.write("---")
+    
+    # 분석 결과 가져오기
+    analysis = st.session_state.analysis_results.get(page_path)
+    if not analysis:
+        st.error("분석 결과를 찾을 수 없습니다.")
+        return
+    
+    changes = analysis['changes']
+    
+    # 요약 정보
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("추가됨", len(changes['added']))
+    with col2:
+        st.metric("수정됨", len(changes['modified']))
+    with col3:
+        st.metric("삭제됨", len(changes['removed']))
+    with col4:
+        st.metric("변경 없음", len(changes['unchanged']))
+    
+    # 텍스트 변경사항만 필터링
+    text_changes = get_text_changes_only(analysis)
+    
+    if not text_changes:
+        st.info("번역이 필요한 텍스트 변경사항이 없습니다.")
+        return
+    
+    # AI 번역 추천 섹션
+    show_translation_recommendations(text_changes)
+
+def initialize_session_state():
+    """세션 상태 초기화"""
+    if 'uploaded_pages' not in st.session_state:
+        st.session_state.uploaded_pages = []
+    if 'selected_page' not in st.session_state:
+        st.session_state.selected_page = None
+    if 'analysis_results' not in st.session_state:
+        st.session_state.analysis_results = {}
+
+def parse_csv_pages(uploaded_file) -> List[str]:
+    """업로드된 CSV에서 페이지 URL 목록을 추출합니다."""
+    try:
+        df = pd.read_csv(uploaded_file)
+        
+        # 우선순위 1: "Page Path" 컬럼이 있는지 정확히 확인
+        if 'Page Path' in df.columns:
+            pages = df['Page Path'].dropna().unique().tolist()
+            st.success(f"✅ {len(pages)}개의 페이지를 발견했습니다. (컬럼: Page Path)")
+            return pages
+        
+        # 우선순위 2: 대소문자 무시하고 "page path" 찾기
+        page_path_columns = [col for col in df.columns if col.lower() == 'page path']
+        if page_path_columns:
+            column_name = page_path_columns[0]
+            pages = df[column_name].dropna().unique().tolist()
+            st.success(f"✅ {len(pages)}개의 페이지를 발견했습니다. (컬럼: {column_name})")
+            return pages
+        
+        # 우선순위 3: "page"와 "path"가 모두 포함된 컬럼 찾기
+        page_path_like = [col for col in df.columns if 'page' in col.lower() and 'path' in col.lower()]
+        if page_path_like:
+            column_name = page_path_like[0]
+            pages = df[column_name].dropna().unique().tolist()
+            st.success(f"✅ {len(pages)}개의 페이지를 발견했습니다. (컬럼: {column_name})")
+            return pages
+        
+        # 우선순위 4: 기존 로직 - URL이 포함될 수 있는 컬럼명들 확인
+        url_columns = [col for col in df.columns if any(
+            keyword in col.lower() 
+            for keyword in ['url', 'path', 'page', 'link']
+        )]
+        
+        if not url_columns:
+            st.error("'Page Path' 또는 URL/페이지 경로가 포함된 컬럼을 찾을 수 없습니다.")
+            st.info("💡 사용 가능한 컬럼명들:")
+            for col in df.columns:
+                st.info(f"   - {col}")
+            return []
+        
+        # 첫 번째 URL 컬럼 사용
+        column_name = url_columns[0]
+        pages = df[column_name].dropna().unique().tolist()
+        
+        st.warning(f"⚠️ 'Page Path' 컬럼을 찾지 못해 '{column_name}' 컬럼을 사용합니다.")
+        st.success(f"✅ {len(pages)}개의 페이지를 발견했습니다.")
+        return pages
+        
+    except Exception as e:
+        st.error(f"CSV 파일 파싱 중 오류: {str(e)}")
+        return []
+
+def create_dashboard(pages: List[str]):
+    """페이지별 변경사항 요약 대시보드를 생성합니다."""
+    st.subheader("📊 페이지 변경사항 대시보드")
+    
+    if not pages:
+        st.warning("분석할 페이지가 없습니다.")
+        return
+    
+    # 진행률 표시
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    
+    dashboard_data = []
+    analyzer = PageAnalyzer()
+    
+    for i, page in enumerate(pages):
+        status_text.text(f"분석 중: {page}")
+        progress_bar.progress((i + 1) / len(pages))
+        
+        try:
+            # 캐시된 분석 결과가 있는지 확인
+            if page not in st.session_state.analysis_results:
+                analysis = analyzer.analyze_page_changes(page)
+                st.session_state.analysis_results[page] = analysis
+            else:
+                analysis = st.session_state.analysis_results[page]
+            
+            summary = analysis['analysis_summary']
+            
+            # 전체 컴포넌트 수 계산
+            total_components = (summary['total_added'] + summary['total_modified'] + 
+                              summary['total_removed'] + summary['total_unchanged'])
+            
+            dashboard_data.append({
+                '페이지 경로': page,
+                '전체': total_components,
+                '추가됨': summary['total_added'],
+                '수정됨': summary['total_modified'], 
+                '삭제됨': summary['total_removed'],
+                '변경없음': summary['total_unchanged'],
+                '번역 필요': summary['needs_translation'],
+                '검토 필요': summary['needs_review'],
+                '상태': get_page_status(summary)
+            })
+            
+        except Exception as e:
+            dashboard_data.append({
+                '페이지 경로': page,
+                '전체': 0,
+                '추가됨': 0, 
+                '수정됨': 0, 
+                '삭제됨': 0,
+                '변경없음': 0,
+                '번역 필요': 0, 
+                '검토 필요': 0,
+                '상태': f"오류: {str(e)}"
+            })
+    
+    # 결과 표시
+    status_text.text("분석 완료!")
+    progress_bar.progress(100)
+    
+    # 대시보드 테이블에 선택 기능 추가
+    df = pd.DataFrame(dashboard_data)
+    
+    # 컬럼별 정렬 및 필터링 옵션
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:
+        st.write("📊 **페이지 변경사항 요약**")
+    
+    with col2:
+        # 상태 필터
+        status_filter = st.selectbox(
+            "상태 필터:",
+            ["전체", "번역 필요", "변경사항 있음", "변경 없음"],
+            key="status_filter"
+        )
+    
+    # 필터링 적용
+    if status_filter != "전체":
+        if status_filter == "번역 필요":
+            df = df[df['상태'].str.contains('번역 필요')]
+        elif status_filter == "변경사항 있음":
+            df = df[df['상태'].str.contains('변경사항 있음')]
+        elif status_filter == "변경 없음":
+            df = df[df['상태'].str.contains('변경 없음')]
+    
+    # 테이블과 선택 버튼을 함께 표시
+    if not df.empty:
+        # 선택된 페이지를 저장할 세션 상태
+        if 'selected_page_for_detail' not in st.session_state:
+            st.session_state.selected_page_for_detail = None
+        
+        # 각 행마다 선택 버튼과 함께 표시
+        for idx, row in df.iterrows():
+            page_path = row['페이지 경로']
+            status = row['상태']
+            total = row['전체']
+            added = row['추가됨']
+            modified = row['수정됨']
+            deleted = row['삭제됨']
+            unchanged = row['변경없음']
+            
+            with st.container():
+                col1, col2 = st.columns([6, 1])
+                
+                with col1:
+                    # 짧은 페이지 경로 표시 (테이블용)
+                    short_path = page_path.replace('/content/illumina-marketing/en', '...')
+                    
+                    # 변경사항 비율 계산
+                    changed_count = added + modified + deleted
+                    change_percentage = (changed_count / total * 100) if total > 0 else 0
+                    
+                    # Option 5 스타일: 깔끔한 여러 줄 표시
+                    st.write(f"**{short_path}**")
+                    st.write(f"{status}")
+                    st.write("")  # 작은 간격
+                    
+                    # 아이콘 + 색상 조합 정보 라인
+                    info_parts = []
+                    if total > 0:
+                        info_parts.append(f"📊 전체 {total}개")
+                    if unchanged > 0:
+                        info_parts.append(f"🟢 변경없음 {unchanged}개")
+                    if modified > 0:
+                        info_parts.append(f"🟡 수정됨 {modified}개")
+                    if added > 0:
+                        info_parts.append(f"🟢 추가됨 {added}개")
+                    if deleted > 0:
+                        info_parts.append(f"🔴 삭제됨 {deleted}개")
+                    if change_percentage > 0:
+                        info_parts.append(f"📈 변경률 {change_percentage:.1f}%")
+                    
+                    if info_parts:
+                        st.write("  |  ".join(info_parts))
+                
+                with col2:
+                    # 토글 버튼 (열기/닫기)
+                    current_selected = st.session_state.selected_page_for_detail == page_path
+                    button_text = "📤 닫기" if current_selected else "📋 상세"
+                    
+                    if st.button(button_text, key=f"detail_btn_{idx}"):
+                        if current_selected:
+                            # 이미 선택된 페이지면 닫기
+                            st.session_state.selected_page_for_detail = None
+                        else:
+                            # 새로운 페이지 선택
+                            st.session_state.selected_page_for_detail = page_path
+                        st.rerun()
+                
+                # 이 행이 선택되었으면 바로 아래에 상세 분석 표시
+                if st.session_state.selected_page_for_detail == page_path:
+                    with st.expander("📊 상세 분석", expanded=True):
+                        show_detailed_analysis(page_path)
+                
+                st.divider()
+    
+    else:
+        st.info("필터 조건에 맞는 페이지가 없습니다.")
+
+def get_page_status(summary: Dict) -> str:
+    """페이지 상태를 판단합니다."""
+    if summary['needs_translation'] > 0 or summary['needs_review'] > 0:
+        return f"🟡 번역 필요 ({summary['needs_translation']}개)"
+    elif summary['total_added'] + summary['total_modified'] + summary['total_removed'] > 0:
+        return "🟠 변경사항 있음"
+    else:
+        return "🟢 변경 없음"
+
+def show_translation_recommendations(text_changes: List[Dict]):
+    """AI 번역 추천을 표시합니다."""
+    st.subheader("🤖 AI 번역 추천")
+    
+    # 언어 쌍 선택
+    language_options = {
+        "영어 → 한국어": "en_ko",
+        "영어 → 일본어": "en_ja"
+    }
+    
+    selected_lang = st.selectbox(
+        "언어 쌍 선택:",
+        options=list(language_options.keys())
+    )
+    
+    lang_pair = language_options[selected_lang]
+    
+    # Translation Searcher 초기화
+    with st.spinner("AI 모델 로딩 중..."):
+        try:
+            searcher = TranslationSearcher(lang_pair)
+            
+            # GPU 상태 표시
+            stats = searcher.get_stats()
+            if "error" not in stats:
+                st.success(f"🚀 GPU 가속 AI 모델 준비 완료! (DB: {stats['total_translations']:,}개 번역 사례)")
+            else:
+                st.error(f"번역 DB 연결 실패: {stats['error']}")
+                return
+                
+        except Exception as e:
+            st.error(f"AI 모델 로딩 실패: {str(e)}")
+            return
+    
+    # 각 변경사항에 대한 번역 추천
+    for i, change in enumerate(text_changes):
+        with st.expander(f"📝 변경사항 {i+1}: {change['component_path']}", expanded=True):
+            
+            # 변경 내용 표시
+            if change['change_type'] == 'added':
+                st.write("**🆕 새로 추가된 텍스트:**")
+                st.code(change['content'], language='text')
+                search_text = change['content']
+                
+            elif change['change_type'] == 'modified':
+                st.write("**✏️ 수정된 텍스트:**")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write("*소스 (원문):*")
+                    st.code(change['source_content'], language='text')
+                with col2:
+                    st.write("*타겟 (번역문):*")
+                    st.code(change['target_content'], language='text')
+                search_text = change['source_content']
+            
+            # AI 번역 추천
+            if search_text.strip():
+                with st.spinner("AI가 번역을 찾고 있습니다..."):
+                    recommendations = searcher.search_similar_translations(search_text, top_k=3)
+                
+                if recommendations:
+                    st.write("**🤖 AI 추천 번역:**")
+                    
+                    for j, rec in enumerate(recommendations):
+                        recommendation_text = format_recommendation_for_display(rec)
+                        st.markdown(f"**{j+1}.** {recommendation_text}")
+                        
+                        # 상세 정보 (접을 수 있음)
+                        with st.expander(f"상세 정보 {j+1}", expanded=False):
+                            st.write(f"**원문:** {rec['source_text']}")
+                            st.write(f"**번역:** {rec['target_text']}")
+                            st.write(f"**유사도:** {rec['similarity_score']:.1%}")
+                            st.write(f"**신뢰도:** {rec['confidence_level']}")
+                            
+                            # spac-ko_KR 페이지 경로 생성
+                            source_page_path = rec['page_path']
+                            target_page_url = build_aem_url(source_page_path, "spac-ko_KR")
+                            
+                            st.write(f"**출처 페이지:** {source_page_path}")
+                            if target_page_url:
+                                st.markdown(f"**한국어 페이지:** [spac-ko_KR에서 보기]({target_page_url})")
+                            st.write(f"**컴포넌트 경로:** {rec['component_path']}")
+                            
+                            # 현재 변경사항의 컴포넌트 정보도 표시
+                            if 'component_path' in change:
+                                st.write("---")
+                                st.write("**현재 변경사항:**")
+                                st.write(f"**컴포넌트 경로:** {change['component_path']}")
+                                if 'component_type' in change and change['component_type']:
+                                    st.write(f"**컴포넌트 타입:** {change['component_type']}")
+                else:
+                    st.warning("🔍 유사한 번역 사례를 찾을 수 없습니다.")
+
+def main():
+    """메인 앱 로직"""
+    initialize_session_state()
+    
+    # 사이드바: 파일 업로드
+    with st.sidebar:
+        st.header("📁 파일 업로드")
+        uploaded_file = st.file_uploader(
+            "검수할 페이지 목록 CSV를 업로드하세요",
+            type=['csv'],
+            help="Page Path 컬럼이 포함된 CSV 파일"
+        )
+        
+        if uploaded_file is not None:
+            # CSV 파싱
+            pages = parse_csv_pages(uploaded_file)
+            st.session_state.uploaded_pages = pages
+            
+        # 연결 상태 확인
+        st.header("🔌 연결 상태")
+        try:
+            db = get_db()
+            collections = db.list_collection_names()
+            st.success(f"✅ MongoDB 연결됨 ({len(collections)}개 컬렉션)")
+        except Exception as e:
+            st.error(f"❌ MongoDB 연결 실패: {str(e)}")
+    
+    # 메인 화면
+    if not st.session_state.uploaded_pages:
+        st.info("👈 사이드바에서 CSV 파일을 업로드하여 시작하세요.")
+        
+        # 샘플 CSV 형식 안내
+        st.subheader("📋 CSV 파일 형식 예시")
+        sample_data = {
+            'Page Path': [
+                '/content/illumina-marketing/en/products/sequencing',
+                '/content/illumina-marketing/en/areas-of-interest/cancer',
+                '/content/illumina-marketing/en/company/news'
+            ],
+            'Status': ['검토 필요', '번역 필요', '완료'],
+            'Priority': ['High', 'Medium', 'Low']
+        }
+        st.dataframe(pd.DataFrame(sample_data))
+        st.info("💡 **'Page Path'** 컬럼명을 사용하면 자동으로 인식됩니다.")
+        
+    else:
+        # 대시보드 표시
+        create_dashboard(st.session_state.uploaded_pages)
+
+if __name__ == "__main__":
+    main()
