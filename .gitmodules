@@ -1,0 +1,8 @@
+[submodule "aem-qa-system"]
+	path = aem-qa-system
+	url = https://github.com/sijungkim/aem-qa-system.git
+	branch = feature/cleanup_tm
+[submodule "aem_qa_station"]
+	path = aem_qa_station
+	url = https://github.com/sijungkim/aem_qa_station.git
+	branch = feature/excel-report-version-selection
