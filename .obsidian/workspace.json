@@ -192,16 +192,16 @@
   },
   "active": "b3bfb7aed4adcf95",
   "lastOpenFiles": [
-    "aem-qa-system/src/scripts/ingest_base_tm.py",
-    "aem-qa-system/notebooks/_ingest_base_tm.ipynb",
-    "aem-qa-system/src/utils/__pycache__/excel_processor.cpython-312.pyc.129992183859840",
-    "aem-qa-system/src/utils/__pycache__/mappings.cpython-312.pyc.133259998616848",
-    "aem-qa-system/data/1_input/source_excels/glossary/_Korean_Top_Nav_Jaden_Reviewed-Comment_Included.xlsx",
-    "aem-qa-system/data/1_input/source_excels/glossary/_Jaden_Reviewed_KR-Product-Name-List_240326.xlsx",
-    "aem-qa-system/data/1_input/source_excels/glossary/_Add_Cart_Translation_KR_240326.xlsx",
-    "aem-qa-system/src/utils/__pycache__/mappings.cpython-312.pyc.126933556517984",
-    "aem-qa-system/src/utils/__pycache__/excel_processor.cpython-312.pyc.139927194286224",
-    "aem-qa-system/src/utils/__pycache__/excel_processor.cpython-312.pyc.134570925282160",
-    "aem-qa-system/src/utils/__pycache__/mappings.cpython-312.pyc.124783692979296"
+    "aem_qa_system/rag_database/chroma_db_store/chroma.sqlite3-journal",
+    "aem_qa_system/rag_database/chroma_db_store/chroma.sqlite3",
+    "aem_qa_system/rag_database/chroma_db_store",
+    "aem_qa_system/rag_database",
+    "aem_qa_system",
+    "aem_qa_station/modules/__pycache__/version_manager.cpython-312.pyc",
+    "aem_qa_station/modules/__pycache__/searcher.cpython-312.pyc",
+    "aem_qa_station/modules/__pycache__/analyzer.cpython-312.pyc",
+    "aem_qa_station/modules/__pycache__/analyzer.cpython-312.pyc.135467321064448",
+    "aem_qa_station/modules/__pycache__/connections.cpython-312.pyc",
+    "aem_qa_station/modules/__pycache__/connections.cpython-312.pyc.135467363210800"
   ]
 }
