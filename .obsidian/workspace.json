@@ -192,16 +192,16 @@
   },
   "active": "b3bfb7aed4adcf95",
   "lastOpenFiles": [
+    "rag_database/chroma_db_store/chroma.sqlite3-journal",
+    "rag_database/chroma_db_store/chroma.sqlite3",
+    "rag_database/chroma_db_store",
+    "rag_database",
     "aem_qa_system/rag_database/chroma_db_store/chroma.sqlite3-journal",
     "aem_qa_system/rag_database/chroma_db_store/chroma.sqlite3",
     "aem_qa_system/rag_database/chroma_db_store",
     "aem_qa_system/rag_database",
     "aem_qa_system",
     "aem_qa_station/modules/__pycache__/version_manager.cpython-312.pyc",
-    "aem_qa_station/modules/__pycache__/searcher.cpython-312.pyc",
-    "aem_qa_station/modules/__pycache__/analyzer.cpython-312.pyc",
-    "aem_qa_station/modules/__pycache__/analyzer.cpython-312.pyc.135467321064448",
-    "aem_qa_station/modules/__pycache__/connections.cpython-312.pyc",
-    "aem_qa_station/modules/__pycache__/connections.cpython-312.pyc.135467363210800"
+    "aem_qa_station/modules/__pycache__/searcher.cpython-312.pyc"
   ]
 }
