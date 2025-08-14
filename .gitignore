@@ -1,0 +1,73 @@
+# ===================================================================
+# aem_qa_system 프로젝트를 위한 .gitignore 파일
+# ===================================================================
+
+# --- Python 관련 ---
+# 파이썬 캐시 파일 및 폴더
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 파이썬 가상환경 폴더
+# (venv, env 등 다양한 이름의 가상환경 폴더를 모두 무시)
+venv/
+.venv/
+env/
+.env/
+*_env/
+
+# 민감한 정보를 담을 수 있는 .env 파일
+.env
+.env.*
+
+# --- Jupyter Notebook 관련 ---
+# 노트북 체크포인트 폴더
+.ipynb_checkpoints/
+
+# --- IDE 및 에디터 설정 ---
+# VSCode, PyCharm 등
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- 프로젝트 생성물 (Artifacts) ---
+# 로그 및 리포트 폴더
+# 이 폴더들은 스크립트 실행 시 자동으로 생성되므로 Git으로 관리할 필요가 없습니다.
+logs/
+reports/
+
+# --- 데이터 폴더 ---
+data-1/
+data/
+archive/
+# 1. 다운로드된 원본 데이터 (용량이 매우 클 수 있음)
+data/2_downloaded/
+
+# 2. 가공된 데이터 (스크립트로 언제든 재생성 가능)
+data/3_processed/
+
+# 3. 자동으로 생성되는 배치 파일 폴더
+data/1_input/aem_batches_todo/
+data/1_input/aem_batches_done/
+data/1_input/pdf_batches_todo/
+data/1_input/pdf_batches_done/
+
+# --- 사용자의 선택이 필요한 항목 ---
+# 링귀스트가 제공한 원본 엑셀 파일이 매우 크거나,
+# Git으로 관리하고 싶지 않은 경우 아래 줄의 주석(#)을 제거하세요.
+# data/1_input/source_excels/
+
+# --- OS 관련 파일 ---
+.DS_Store
+Thumbs.db
+
+# --- 데이터베이스 파일 ---
+# 스크립트 실행으로 생성되는 벡터 DB 폴더
+rag_database/
+
+
+# --- 그 외
+aem_qa_system.egg-info/
+aem_qa_system.egg-info-1/
