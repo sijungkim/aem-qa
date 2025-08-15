@@ -1,0 +1,186 @@
+.
+├── aem-qa-system
+│   ├── aem_qa_system.egg-info
+│   │   ├── PKG-INFO
+│   │   ├── SOURCES.txt
+│   │   ├── dependency_links.txt
+│   │   └── top_level.txt
+│   ├── archive
+│   │   ├── notebooks
+│   │   │   ├── 0_utilities.ipynb
+│   │   │   ├── 10_clean_translation_memory.ipynb
+│   │   │   ├── 12_semantic_segmentation.ipynb
+│   │   │   ├── 1_process_linguist_assets.ipynb
+│   │   │   ├── 2_Master_Create_Package.bak
+│   │   │   ├── 2_Master_Create_Package.bak2
+│   │   │   ├── 2_setup_batches.ipynb
+│   │   │   ├── 3_run_collection_multilingual.ipynb
+│   │   │   ├── 4_run_processing.ipynb
+│   │   │   ├── 5_run_qa_analysis.ipynb
+│   │   │   ├── 6_build_final_tm.ipynb
+│   │   │   ├── 7_analyze_structure_diff.ipynb
+│   │   │   ├── 8_create_chroma_index.ipynb
+│   │   │   ├── 9_test_chroma_search.ipynb
+│   │   │   ├── _3_run_collection.ipynb
+│   │   │   ├── _3b_extract_pdf_pairs.ipynb
+│   │   │   ├── _3b_extract_pdf_pairs_multilingual.ipynb
+│   │   │   ├── _3c_extract_pdf_pairs_with_llm.ipynb
+│   │   │   ├── _3d_extract_pdf_pairs_hybrid.ipynb
+│   │   │   ├── _ingest_base_tm.ipynb
+│   │   │   ├── _pdf_download_test.ipynb
+│   │   │   ├── excel_prep.ipynb
+│   │   │   └── tm_clean_test.ipynb
+│   │   └── rag_database
+│   │       └── chroma_db_store
+│   ├── data
+│   │   ├── 1_input
+│   │   │   ├── aem_batches_done
+│   │   │   ├── aem_batches_todo
+│   │   │   ├── aem_pages_master.bak
+│   │   │   ├── aem_pages_master.txt
+│   │   │   ├── dnu
+│   │   │   ├── pdf_batches_done
+│   │   │   ├── pdf_batches_todo
+│   │   │   ├── pdf_list_master.bak
+│   │   │   ├── pdf_list_master_en_ja.bak
+│   │   │   ├── pdf_list_master_en_ja.csv
+│   │   │   ├── pdf_list_master_en_ko.bak
+│   │   │   └── source_excels
+│   │   ├── 2_downloaded
+│   │   │   ├── pdfs
+│   │   │   └── pdfs-dnu
+│   │   └── 3_processed
+│   │       ├── archive
+│   │       ├── base_tm.csv
+│   │       ├── clean_tm_csv
+│   │       ├── final_tm.csv
+│   │       ├── final_tm_en_ja.csv
+│   │       ├── final_tm_en_ko.csv
+│   │       ├── glossary.csv
+│   │       ├── packages
+│   │       ├── pdf_tm_en_ja_llm_enhanced_20250811_073023.csv
+│   │       ├── pdf_tm_en_ja_llm_enhanced_20250811_104055.csv
+│   │       ├── pdf_translation_pairs_all.csv
+│   │       ├── pdf_translation_pairs_en_ja.csv
+│   │       ├── pdf_translation_pairs_en_ja_llm_enhanced.csv
+│   │       └── untranslated_en.csv
+│   ├── docker-compose.yml
+│   ├── documentations
+│   │   ├── aem_qa_solution_diagram.md
+│   │   ├── aem_qa_station_diagram.md
+│   │   ├── aem_qa_system_diagram.md
+│   │   └── dir_structure.txt
+│   ├── logs
+│   ├── notebooks
+│   │   ├── 1_Master_Process_Excels.ipynb
+│   │   ├── 2_Master_Create_Package.ipynb
+│   │   ├── 3_Master_Ingest_Data.ipynb
+│   │   └── tests
+│   ├── reports
+│   │   ├── page_structure_diff.csv
+│   │   ├── page_structure_diff_en_ja.csv
+│   │   ├── untranslated_en_ja.csv
+│   │   └── untranslated_en_ko.csv
+│   ├── requirements.txt
+│   ├── setup.py
+│   └── src
+│       ├── __pycache__
+│       │   ├── config.cpython-311.pyc
+│       │   ├── config.cpython-312.pyc
+│       │   ├── config.cpython-313.pyc
+│       │   └── mapping.cpython-312.pyc
+│       ├── analyzers
+│       │   ├── __pycache__
+│       │   └── page_structure_analyzer.py
+│       ├── collectors
+│       │   ├── __init__.py
+│       │   ├── __pycache__
+│       │   ├── aem_collector.py
+│       │   ├── collection_pipeline.bak
+│       │   ├── collection_pipeline.py
+│       │   ├── data_models.py
+│       │   ├── manifest_builder.py
+│       │   ├── package_builder.py
+│       │   └── pdf_collector.py
+│       ├── config.py
+│       ├── indexing
+│       │   ├── __pycache__
+│       │   └── chroma_indexer.py
+│       ├── processors
+│       │   ├── __init__.py
+│       │   ├── __pycache__
+│       │   ├── _hybrid_pdf_pair_extractor.py
+│       │   ├── _llm_pdf_tm_generator copy.py
+│       │   ├── _llm_pdf_tm_generator.py
+│       │   ├── _pdf_pair_matcher.py
+│       │   ├── _pdf_text_extractor.bak
+│       │   ├── _pdf_text_extractor.py
+│       │   ├── _translation_pair_generator.bak
+│       │   ├── _translation_pair_generator.py
+│       │   ├── aem_tm_builder.py
+│       │   ├── data_ingestor.py
+│       │   ├── pdf_tm_workflow.md
+│       │   ├── qa_analyzer.py
+│       │   ├── semantic_segmenter.py
+│       │   ├── tm_cleaner.py
+│       │   └── utlimate_tm_builder.py
+│       ├── scripts
+│       │   ├── ingest_base_tm.py
+│       │   └── setup_collections.py
+│       └── utils
+│           ├── __init__.py
+│           ├── __pycache__
+│           ├── batch_utils.py
+│           ├── collections_manager.py
+│           ├── excel_processor.py
+│           ├── mappings.py
+│           ├── markdown files
+│           ├── package_utils.py
+│           └── test_mongo_connection.py
+├── aem_qa_station
+│   ├── README.md
+│   ├── __pycache__
+│   │   ├── config.cpython-311.pyc
+│   │   └── config.cpython-312.pyc
+│   ├── aem_qa_docker_deployment.md
+│   ├── app.ko
+│   ├── app.py
+│   ├── config.py
+│   ├── documentations
+│   │   ├── AEM_QA Station - User Guide-EN.md
+│   │   ├── AEM_QA Station - User Guide.md
+│   │   ├── aem_qa_solution_diagram.md
+│   │   ├── aem_qa_station_diagram.md
+│   │   └── aem_qa_system_diagram.md
+│   ├── modules
+│   │   ├── __pycache__
+│   │   │   ├── analyzer.cpython-311.pyc
+│   │   │   ├── analyzer.cpython-312.pyc
+│   │   │   ├── connections.cpython-311.pyc
+│   │   │   ├── connections.cpython-312.pyc
+│   │   │   ├── searcher.cpython-311.pyc
+│   │   │   ├── searcher.cpython-312.pyc
+│   │   │   ├── version_manager.cpython-311.pyc
+│   │   │   └── version_manager.cpython-312.pyc
+│   │   ├── analyzer.py
+│   │   ├── connections.py
+│   │   ├── searcher.py
+│   │   └── version_manager.py
+│   ├── requirements.txt
+│   ├── search.ipynb
+│   ├── src
+│   │   └── __pycache__
+│   │       └── config.cpython-312.pyc
+│   └── test.ipynb
+├── archive
+│   ├── README.md
+│   ├── TODO.md
+│   ├── directory_structure.txt
+│   ├── 기술 백서 및 아키텍처 가이드.md
+│   └── 레거시 TM 자동 표준화 파이프라인 (Legacy TM Automated Standardization Pipeline).md
+├── directory_structure
+└── rag_database
+    └── chroma_db_store
+        └── chroma.sqlite3
+
+51 directories, 133 files
