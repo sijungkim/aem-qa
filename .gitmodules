@@ -6,3 +6,8 @@
 	path = aem_qa_station
 	url = https://github.com/sijungkim/aem_qa_station.git
 	branch = veryfy-686ef187
+
+[submodule "aem_page_collector"] 
+	path = aem_page_collector
+	url = https://github.com/sijungkim/aem_page_collector.git
+	branch = main

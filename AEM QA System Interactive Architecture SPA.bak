@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEM QA System - Interactive Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 
+    Chosen Palette: Slate & Sky (Cool Neutrals)
+    Application Structure Plan: A single-page, top-down narrative structure is used. A sticky navigation bar allows users to jump between the two main sections: 'Overall Architecture' and 'Detailed Workflow'. This structure is intuitive for understanding a technical system, starting with a high-level overview and then drilling down into the step-by-step process. Key interactions include hover effects on diagram nodes for visual feedback and a click-to-highlight feature connecting the architecture diagram to the workflow diagram, enhancing user comprehension by linking high-level components to their detailed processes.
+    Visualization & Content Choices: The core Mermaid diagrams are recreated using structured HTML (divs) and styled with Tailwind CSS (flexbox/grid), as Mermaid JS is not permitted. This method provides full control over styling and responsiveness. Unicode icons are used for clarity. The primary interaction goal is to organize and inform. The click-to-highlight feature (JS) was chosen to create a relationship between the two diagrams, allowing users to see how abstract components translate into concrete workflow steps. Chart.js/Plotly were not needed as the source material contains process diagrams, not statistical data.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .diagram-node {
+            transition: all 0.2s ease-in-out;
+        }
+        .diagram-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .arrow {
+            position: relative;
+            color: #64748b; /* slate-500 */
+        }
+        .arrow-down::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -12px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #64748b; /* slate-500 */
+        }
+        .arrow-right::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -12px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 6px solid #64748b; /* slate-500 */
+        }
+        .highlight {
+            border-color: #0ea5e9 !important; /* sky-500 */
+            background-color: #f0f9ff !important; /* sky-50 */
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-slate-800">AEM QA System</h1>
+                </div>
+                <nav class="hidden md:flex md:space-x-8">
+                    <a href="#architecture" class="font-medium text-slate-600 hover:text-sky-600 transition-colors">전체 아키텍처</a>
+                    <a href="#workflow" class="font-medium text-slate-600 hover:text-sky-600 transition-colors">상세 워크플로우</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="architecture" class="mb-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">1. 전체 시스템 아키텍처</h2>
+            <p class="text-center text-lg text-slate-600 mb-12 max-w-3xl mx-auto">
+                시스템을 구성하는 주요 컴포넌트와 사용자, 그리고 데이터베이스 간의 상호작용을 보여줍니다. 각 컴포넌트를 클릭하면 아래 워크플로우에서 해당 단계가 강조 표시됩니다.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <div class="space-y-8">
+                    <div class="diagram-node bg-white p-4 rounded-lg border-2 border-slate-200 shadow-md text-center cursor-pointer" data-component="user">
+                        <h3 class="font-bold text-lg">👨‍💻👩‍🔬 사용자 (Users)</h3>
+                        <p class="text-sm text-slate-500 mt-1">Admin & QA Analyst</p>
+                    </div>
+                    <div class="flex justify-center">
+                        <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                    </div>
+                    <div class="diagram-node bg-white p-4 rounded-lg border-2 border-slate-200 shadow-md text-center cursor-pointer" data-component="collector">
+                        <h3 class="font-bold text-lg">📲 데이터 수집 (Collector App)</h3>
+                        <p class="text-sm text-slate-500 mt-1">app.py</p>
+                    </div>
+                </div>
+
+                <div class="space-y-8 mt-0 lg:mt-24">
+                    <div class="diagram-node bg-white p-4 rounded-lg border-2 border-slate-200 shadow-md text-center cursor-pointer" data-component="system">
+                        <h3 class="font-bold text-lg">⚙️ AEM QA 분석 시스템</h3>
+                        <div class="mt-2 p-2 bg-slate-50 rounded">
+                            <p class="font-semibold text-sm">UI Layer (Streamlit)</p>
+                            <p class="text-xs text-slate-500">Admin UI & QA Workstation</p>
+                        </div>
+                        <div class="mt-2 p-2 bg-slate-50 rounded">
+                            <p class="font-semibold text-sm">Backend & Processing Layer</p>
+                            <p class="text-xs text-slate-500">Ingestor, Processor, Analyzer, Searcher</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                         <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                    </div>
+                     <div class="diagram-node bg-white p-4 rounded-lg border-2 border-slate-200 shadow-md text-center cursor-pointer" data-component="db">
+                        <h3 class="font-bold text-lg">🗃️🧠 데이터 저장소</h3>
+                        <p class="text-sm text-slate-500 mt-1">MongoDB & ChromaDB</p>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="diagram-node bg-white p-4 rounded-lg border-2 border-slate-200 shadow-md text-center cursor-pointer" data-component="external">
+                        <h3 class="font-bold text-lg">🌐 외부 시스템</h3>
+                        <p class="text-sm text-slate-500 mt-1">AEM Author Server</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-24">
+
+        <section id="workflow">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">2. 상세 데이터 워크플로우</h2>
+            <p class="text-center text-lg text-slate-600 mb-12 max-w-3xl mx-auto">
+                데이터가 생성되어 최종 분석 결과로 사용자에게 제공되기까지의 전체 과정을 단계별로 보여줍니다.
+            </p>
+
+            <div class="space-y-16">
+                <!-- Phase 1 -->
+                <div class="p-6 bg-white rounded-xl shadow-lg border-2 border-transparent workflow-phase" data-phase="collector">
+                    <h3 class="text-2xl font-bold mb-6 text-sky-700">Phase 1: 데이터 수집 (Collector App)</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center">
+                            <p class="font-semibold">Admin 실행</p>
+                            <p class="text-xs text-slate-500">Start</p>
+                        </div>
+                        <div class="arrow arrow-down md:arrow-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center">
+                            <p class="font-semibold">페이지 목록(.txt) 입력</p>
+                        </div>
+                        <div class="arrow arrow-down md:arrow-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center">
+                            <p class="font-semibold">1. AEM 콘텐츠 수집</p>
+                            <p class="text-xs text-slate-500">aem_collector.py</p>
+                        </div>
+                         <div class="arrow arrow-down md:arrow-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center">
+                            <p class="font-semibold">2. 패키징</p>
+                            <p class="text-xs text-slate-500">package_builder.py</p>
+                        </div>
+                        <div class="arrow arrow-down md:arrow-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-green-50 border border-green-200 rounded-md text-center">
+                            <p class="font-semibold">콘텐츠 패키지(.zip) 생성</p>
+                            <p class="text-xs text-slate-500">End</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="p-6 bg-white rounded-xl shadow-lg border-2 border-transparent workflow-phase" data-phase="system">
+                    <h3 class="text-2xl font-bold mb-6 text-indigo-700">Phase 2: 데이터 처리 및 인덱싱 (Admin)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                        <div class="space-y-4">
+                            <div class="diagram-node p-3 bg-slate-50 border rounded-md">
+                                <p class="font-semibold">패키지 업로드</p>
+                                <p class="text-xs text-slate-500">admin_ingestion.py</p>
+                            </div>
+                            <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                            <div class="diagram-node p-3 bg-slate-50 border rounded-md">
+                                <p class="font-semibold">3. 데이터 적재</p>
+                                <p class="text-xs text-slate-500">data_ingestor.py</p>
+                            </div>
+                            <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                            <div class="diagram-node p-3 bg-blue-50 border border-blue-200 rounded-md">
+                                <p class="font-semibold">MongoDB에 Raw 데이터 저장</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="diagram-node p-3 bg-slate-50 border rounded-md">
+                                <p class="font-semibold">TM 처리 시작</p>
+                                <p class="text-xs text-slate-500">admin_processing.py</p>
+                            </div>
+                            <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                            <div class="diagram-node p-3 bg-slate-50 border rounded-md">
+                                <p class="font-semibold">4. TM 구축 및 분리</p>
+                                <p class="text-xs text-slate-500">utlimate_tm_builder.py</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                             <div class="diagram-node p-3 bg-slate-50 border rounded-md">
+                                <p class="font-semibold">Clean TM 생성</p>
+                            </div>
+                            <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                             <div class="diagram-node p-3 bg-slate-50 border rounded-md">
+                                <p class="font-semibold">5. 벡터 인덱싱</p>
+                                <p class="text-xs text-slate-500">chroma_indexer.py</p>
+                            </div>
+                             <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                            <div class="diagram-node p-3 bg-purple-50 border border-purple-200 rounded-md">
+                                <p class="font-semibold">ChromaDB에 벡터 저장</p>
+                                <p class="text-xs text-slate-500">End</p>
+                            </div>
+                        </div>
+                         <div class="space-y-4">
+                             <div class="diagram-node p-3 bg-slate-50 border rounded-md">
+                                <p class="font-semibold">HTML Archive 저장</p>
+                            </div>
+                             <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                            <div class="diagram-node p-3 bg-blue-50 border border-blue-200 rounded-md">
+                                <p class="font-semibold">MongoDB에 저장</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="p-6 bg-white rounded-xl shadow-lg border-2 border-transparent workflow-phase" data-phase="user">
+                    <h3 class="text-2xl font-bold mb-6 text-emerald-700">Phase 3: 분석 및 품질 검수 (QA Analyst)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <p class="font-bold text-center mb-4">QA 대시보드</p>
+                            <div class="flex flex-col items-center space-y-4">
+                                <div class="diagram-node p-3 bg-white border rounded-md w-full text-center">
+                                    <p class="font-semibold">페이지 목록(.csv) & 버전 선택</p>
+                                </div>
+                                <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                                <div class="diagram-node p-3 bg-white border rounded-md w-full text-center">
+                                    <p class="font-semibold">6. 버전 간 비교 분석</p>
+                                    <p class="text-xs text-slate-500">analyzer.py</p>
+                                </div>
+                                <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                                <div class="diagram-node p-3 bg-white border rounded-md w-full text-center">
+                                    <p class="font-semibold">대시보드에 결과 표시</p>
+                                </div>
+                                 <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                                <div class="diagram-node p-3 bg-green-50 border border-green-200 rounded-md w-full text-center">
+                                    <p class="font-semibold">리포트 생성</p>
+                                    <p class="text-xs text-slate-500">report_generator.py</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <p class="font-bold text-center mb-4">고급 검색</p>
+                             <div class="flex flex-col items-center space-y-4">
+                                <div class="diagram-node p-3 bg-white border rounded-md w-full text-center">
+                                    <p class="font-semibold">고급 검색 실행</p>
+                                    <p class="text-xs text-slate-500">qa_search.py</p>
+                                </div>
+                                <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                                <div class="diagram-node p-3 bg-white border rounded-md w-full text-center">
+                                    <p class="font-semibold">의미 검색 쿼리</p>
+                                </div>
+                                <div class="arrow arrow-down text-2xl font-mono">↓</div>
+                                <div class="diagram-node p-3 bg-green-50 border border-green-200 rounded-md w-full text-center">
+                                    <p class="font-semibold">검색 결과 표시</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const components = document.querySelectorAll('#architecture .diagram-node');
+            const phases = document.querySelectorAll('.workflow-phase');
+
+            const componentToPhaseMap = {
+                'user': ['user'],
+                'collector': ['collector'],
+                'system': ['system'],
+                'db': ['system'],
+                'external': ['collector']
+            };
+
+            components.forEach(component => {
+                component.addEventListener('click', () => {
+                    const componentKey = component.dataset.component;
+                    const targetPhases = componentToPhaseMap[componentKey] || [];
+
+                    // Remove highlight from all phases first
+                    phases.forEach(p => p.classList.remove('highlight'));
+
+                    // Add highlight to target phases
+                    targetPhases.forEach(phaseKey => {
+                        const phaseElement = document.querySelector(`.workflow-phase[data-phase="${phaseKey}"]`);
+                        if (phaseElement) {
+                            phaseElement.classList.add('highlight');
+                            phaseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

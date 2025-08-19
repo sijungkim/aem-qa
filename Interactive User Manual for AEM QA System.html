@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Manual: AEM QA System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .step-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .tab-btn.active {
+            border-color: #0ea5e9;
+            background-color: #f0f9ff;
+            color: #0369a1;
+        }
+        .lang-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .lang-btn.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .lang-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900" data-i18n="main-title">AEM QA System 사용자 매뉴얼</h1>
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <div class="flex space-x-1 bg-slate-100 rounded-lg p-1">
+                        <button class="lang-btn active px-3 py-1 rounded text-sm font-medium" data-lang="ko">🇰🇷 한국어</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="en">🇺🇸 English</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="ja">🇯🇵 日本語</button>
+                    </div>
+                    <nav class="hidden md:flex md:space-x-8">
+                        <a href="#part1" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-part1">Part 1: 데이터 수집</a>
+                        <a href="#part2" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-part2">Part 2: 분석 및 QA</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="workflow-overview" class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4" data-i18n="workflow-title">전체 워크플로우</h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto" data-i18n="workflow-desc">
+                AEM QA System은 데이터 수집부터 분석까지 2개의 주요 파트와 5개의 핵심 단계로 구성됩니다. 아래 다이어그램의 각 단계를 클릭하면 해당 설명으로 이동합니다.
+            </p>
+            <div class="mt-8 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                <a href="#part1" class="step-card bg-sky-100 border-2 border-sky-200 p-4 rounded-lg text-center cursor-pointer w-full md:w-auto">
+                    <p class="text-2xl">📦</p>
+                    <h3 class="font-bold text-sky-800" data-i18n="part1-title">Part 1: 데이터 수집</h3>
+                    <p class="text-sm text-sky-600" data-i18n="part1-subtitle">Collector App</p>
+                </a>
+                <span class="text-2xl text-slate-400 font-light">→</span>
+                <a href="#admin-tasks" class="step-card bg-indigo-100 border-2 border-indigo-200 p-4 rounded-lg text-center cursor-pointer w-full md:w-auto">
+                    <p class="text-2xl">⚙️</p>
+                    <h3 class="font-bold text-indigo-800" data-i18n="part2-1-title">Part 2.1: 데이터 처리</h3>
+                    <p class="text-sm text-indigo-600" data-i18n="part2-1-subtitle">Admin 기능</p>
+                </a>
+                <span class="text-2xl text-slate-400 font-light">→</span>
+                <a href="#qa-tasks" class="step-card bg-emerald-100 border-2 border-emerald-200 p-4 rounded-lg text-center cursor-pointer w-full md:w-auto">
+                    <p class="text-2xl">📊</p>
+                    <h3 class="font-bold text-emerald-800" data-i18n="part2-2-title">Part 2.2: 분석 및 QA</h3>
+                    <p class="text-sm text-emerald-600" data-i18n="part2-2-subtitle">QA Workstation</p>
+                </a>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-16">
+
+        <section id="part1" class="mb-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2" data-i18n="part1-full-title">Part 1: 데이터 수집 (Collector App)</h2>
+            <p class="text-slate-600 mb-8" data-i18n="part1-desc">분석에 필요한 원본 데이터를 AEM 서버로부터 수집하여 하나의 패키지 파일(`.zip`)로 만드는 과정입니다.</p>
+            
+            <div class="space-y-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="step2-1-title">2.1. Collector App 실행 및 정보 입력</h3>
+                    <p class="text-slate-600 mb-4" data-i18n="step2-1-desc">`app.py`를 실행하여 'AEM 콘텐츠 수집 및 패키징 도구'를 엽니다. 다음 정보를 정확하게 입력하세요.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <h4 class="font-semibold" data-i18n="auth-info">① AEM 인증 정보</h4>
+                            <ul class="list-disc list-inside text-sm mt-2 text-slate-500">
+                                <li data-i18n="username">AEM 사용자 이름</li>
+                                <li data-i18n="password">AEM 비밀번호</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <h4 class="font-semibold" data-i18n="page-list">② 페이지 목록 파일</h4>
+                            <p class="text-sm mt-2 text-slate-500" data-i18n="page-list-desc">수집할 페이지 경로가 담긴 <code class="bg-slate-200 text-slate-700 px-1 rounded">.txt</code> 파일을 업로드합니다.</p>
+                            <pre class="bg-slate-200 text-slate-700 p-2 rounded mt-2 text-xs"><code>/content/project/us/en/page1
+/content/project/us/en/page2</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="step2-2-title">2.2. 수집 시작 및 결과 다운로드</h3>
+                    <p class="text-slate-600 mb-4" data-i18n="step2-2-desc">모든 정보 입력 후 `[🚀 수집 시작하기]` 버튼을 클릭합니다. 작업이 완료되면 `[📥 (패키지명).zip 다운로드]` 버튼을 클릭하여 결과물을 저장하세요.</p>
+                    <div class="mt-4 p-4 bg-sky-50 border border-sky-200 text-sky-800 rounded-lg">
+                        <p class="font-semibold" data-i18n="important">📌 중요</p>
+                        <p class="text-sm mt-1" data-i18n="important-note">이 단계에서 생성된 `.zip` 파일은 Part 2에서 데이터를 시스템에 적재하기 위한 필수 입력 파일입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-16">
+
+        <section id="part2" class="mb-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2" data-i18n="part2-full-title">Part 2: 데이터 분석 및 QA (AEM QA System)</h2>
+            <p class="text-slate-600 mb-8" data-i18n="part2-desc">수집된 데이터를 시스템에 적재하고, 버전 간 비교 분석 및 AI 기반 검색을 통해 실제 QA 작업을 수행하는 과정입니다.</p>
+            
+            <div>
+                <div class="border-b border-slate-200 mb-6">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <button id="tab-admin" class="tab-btn active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            <span data-i18n="admin-tab">⚙️ 관리자 작업 (Admin)</span>
+                        </button>
+                        <button id="tab-qa" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-lg text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                            <span data-i18n="qa-tab">📊 QA 분석가 작업 (QA Workstation)</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <div id="content-admin" class="tab-content space-y-8">
+                    <div id="admin-tasks" class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                        <h3 class="text-2xl font-semibold mb-4" data-i18n="step3-1-title">3.1. 데이터 적재 및 처리</h3>
+                        <p class="text-slate-600 mb-4" data-i18n="step3-1-desc">새로운 콘텐츠 패키지를 받았을 때 수행하는 초기 설정 작업입니다. `Home.py`를 실행하여 메인 시스템에 접속하세요.</p>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><span class="font-semibold" data-i18n="data-loading">데이터 적재:</span> <span data-i18n="data-loading-desc">사이드바 `[데이터 적재]` 메뉴에서 Part 1에서 생성한 `.zip` 패키지를 업로드합니다.</span></li>
+                            <li><span class="font-semibold" data-i18n="tm-processing">TM 처리 및 인덱싱:</span> <span data-i18n="tm-processing-desc">사이드바 `[TM 처리]` 메뉴에서 언어 쌍을 선택하고 파이프라인을 시작합니다. 이 과정에서 시스템이 자동으로 콘텐츠를 분리하고 AI 검색을 위한 벡터 데이터를 생성합니다.</span></li>
+                        </ol>
+                         <div class="mt-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">
+                            <p class="font-semibold" data-i18n="tip">✅ Tip</p>
+                            <p class="text-sm mt-1" data-i18n="tip-desc">이 작업들은 새로운 데이터를 분석할 때 한 번만 수행하면 됩니다. 이후에는 주로 QA 분석가 작업을 사용하게 됩니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-qa" class="tab-content hidden space-y-8">
+                    <div id="qa-tasks" class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                        <h3 class="text-2xl font-semibold mb-4" data-i18n="step3-2-title">3.2. QA 대시보드를 이용한 분석</h3>
+                        <p class="text-slate-600 mb-4" data-i18n="step3-2-desc">사이드바 `[QA 대시보드]` 메뉴에서 버전 간 콘텐츠 변경 사항을 분석합니다.</p>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><span class="font-semibold" data-i18n="upload-pages">페이지 목록 업로드:</span> <span data-i18n="upload-pages-desc">검수할 페이지 목록이 담긴 <code class="bg-slate-200 text-slate-700 px-1 rounded">.csv</code> 파일을 업로드합니다.</span></li>
+                            <li><span class="font-semibold" data-i18n="select-versions">버전 선택:</span> <span data-i18n="select-versions-desc">분석의 기준이 될 소스(Source) 버전과 타겟(Target) 버전을 선택합니다.</span></li>
+                            <li><span class="font-semibold" data-i18n="run-analysis">분석 실행:</span> <span data-i18n="run-analysis-desc">`[🚀 페이지 분석 실행]` 버튼을 클릭하면 테이블에 페이지별 변경 상태, QA 항목 수, 변경률 등이 표시됩니다.</span></li>
+                            <li><span class="font-semibold" data-i18n="download-report">리포트 다운로드:</span> <span data-i18n="download-report-desc">분석 결과를 `[📄 Excel 리포트]` 또는 `[🌐 HTML 리포트]`로 다운로드하여 공유할 수 있습니다.</span></li>
+                        </ol>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                        <h3 class="text-2xl font-semibold mb-4" data-i18n="step3-3-title">3.3. 고급 검색</h3>
+                        <p class="text-slate-600 mb-4" data-i18n="step3-3-desc">사이드바 `[고급 검색]` 메뉴에서 AI 기반 의미 검색을 통해 번역의 일관성을 검증합니다.</p>
+                         <ol class="list-decimal list-inside space-y-4">
+                            <li><span class="font-semibold" data-i18n="search-options">검색 옵션 선택:</span> <span data-i18n="search-options-desc">대상 언어와 컬렉션(확정 TM, 용어집 등)을 선택합니다.</span></li>
+                            <li><span class="font-semibold" data-i18n="search-input">검색어 입력:</span> <span data-i18n="search-input-desc">번역 품질을 확인하고 싶은 원문 텍스트를 입력합니다.</span></li>
+                            <li><span class="font-semibold" data-i18n="search-results">결과 확인:</span> <span data-i18n="search-results-desc">시스템이 의미적으로 유사한 번역 사례를 찾아 소스/타겟 텍스트, 출처, 유사도와 함께 보여줍니다.</span></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Translation dictionary
+        const translations = {
+            ko: {
+                "main-title": "AEM QA System 사용자 매뉴얼",
+                "nav-part1": "Part 1: 데이터 수집",
+                "nav-part2": "Part 2: 분석 및 QA",
+                "workflow-title": "전체 워크플로우",
+                "workflow-desc": "AEM QA System은 데이터 수집부터 분석까지 2개의 주요 파트와 5개의 핵심 단계로 구성됩니다. 아래 다이어그램의 각 단계를 클릭하면 해당 설명으로 이동합니다.",
+                "part1-title": "Part 1: 데이터 수집",
+                "part1-subtitle": "Collector App",
+                "part2-1-title": "Part 2.1: 데이터 처리",
+                "part2-1-subtitle": "Admin 기능",
+                "part2-2-title": "Part 2.2: 분석 및 QA",
+                "part2-2-subtitle": "QA Workstation",
+                "part1-full-title": "Part 1: 데이터 수집 (Collector App)",
+                "part1-desc": "분석에 필요한 원본 데이터를 AEM 서버로부터 수집하여 하나의 패키지 파일(`.zip`)로 만드는 과정입니다.",
+                "step2-1-title": "2.1. Collector App 실행 및 정보 입력",
+                "step2-1-desc": "`app.py`를 실행하여 'AEM 콘텐츠 수집 및 패키징 도구'를 엽니다. 다음 정보를 정확하게 입력하세요.",
+                "auth-info": "① AEM 인증 정보",
+                "username": "AEM 사용자 이름",
+                "password": "AEM 비밀번호",
+                "page-list": "② 페이지 목록 파일",
+                "page-list-desc": "수집할 페이지 경로가 담긴 .txt 파일을 업로드합니다.",
+                "step2-2-title": "2.2. 수집 시작 및 결과 다운로드",
+                "step2-2-desc": "모든 정보 입력 후 `[🚀 수집 시작하기]` 버튼을 클릭합니다. 작업이 완료되면 `[📥 (패키지명).zip 다운로드]` 버튼을 클릭하여 결과물을 저장하세요.",
+                "important": "📌 중요",
+                "important-note": "이 단계에서 생성된 `.zip` 파일은 Part 2에서 데이터를 시스템에 적재하기 위한 필수 입력 파일입니다.",
+                "part2-full-title": "Part 2: 데이터 분석 및 QA (AEM QA System)",
+                "part2-desc": "수집된 데이터를 시스템에 적재하고, 버전 간 비교 분석 및 AI 기반 검색을 통해 실제 QA 작업을 수행하는 과정입니다.",
+                "admin-tab": "⚙️ 관리자 작업 (Admin)",
+                "qa-tab": "📊 QA 분석가 작업 (QA Workstation)",
+                "step3-1-title": "3.1. 데이터 적재 및 처리",
+                "step3-1-desc": "새로운 콘텐츠 패키지를 받았을 때 수행하는 초기 설정 작업입니다. `Home.py`를 실행하여 메인 시스템에 접속하세요.",
+                "data-loading": "데이터 적재:",
+                "data-loading-desc": "사이드바 `[데이터 적재]` 메뉴에서 Part 1에서 생성한 `.zip` 패키지를 업로드합니다.",
+                "tm-processing": "TM 처리 및 인덱싱:",
+                "tm-processing-desc": "사이드바 `[TM 처리]` 메뉴에서 언어 쌍을 선택하고 파이프라인을 시작합니다. 이 과정에서 시스템이 자동으로 콘텐츠를 분리하고 AI 검색을 위한 벡터 데이터를 생성합니다.",
+                "tip": "✅ Tip",
+                "tip-desc": "이 작업들은 새로운 데이터를 분석할 때 한 번만 수행하면 됩니다. 이후에는 주로 QA 분석가 작업을 사용하게 됩니다.",
+                "step3-2-title": "3.2. QA 대시보드를 이용한 분석",
+                "step3-2-desc": "사이드바 `[QA 대시보드]` 메뉴에서 버전 간 콘텐츠 변경 사항을 분석합니다.",
+                "upload-pages": "페이지 목록 업로드:",
+                "upload-pages-desc": "검수할 페이지 목록이 담긴 .csv 파일을 업로드합니다.",
+                "select-versions": "버전 선택:",
+                "select-versions-desc": "분석의 기준이 될 소스(Source) 버전과 타겟(Target) 버전을 선택합니다.",
+                "run-analysis": "분석 실행:",
+                "run-analysis-desc": "`[🚀 페이지 분석 실행]` 버튼을 클릭하면 테이블에 페이지별 변경 상태, QA 항목 수, 변경률 등이 표시됩니다.",
+                "download-report": "리포트 다운로드:",
+                "download-report-desc": "분석 결과를 `[📄 Excel 리포트]` 또는 `[🌐 HTML 리포트]`로 다운로드하여 공유할 수 있습니다.",
+                "step3-3-title": "3.3. 고급 검색",
+                "step3-3-desc": "사이드바 `[고급 검색]` 메뉴에서 AI 기반 의미 검색을 통해 번역의 일관성을 검증합니다.",
+                "search-options": "검색 옵션 선택:",
+                "search-options-desc": "대상 언어와 컬렉션(확정 TM, 용어집 등)을 선택합니다.",
+                "search-input": "검색어 입력:",
+                "search-input-desc": "번역 품질을 확인하고 싶은 원문 텍스트를 입력합니다.",
+                "search-results": "결과 확인:",
+                "search-results-desc": "시스템이 의미적으로 유사한 번역 사례를 찾아 소스/타겟 텍스트, 출처, 유사도와 함께 보여줍니다."
+            },
+            en: {
+                "main-title": "AEM QA System User Manual",
+                "nav-part1": "Part 1: Data Collection",
+                "nav-part2": "Part 2: Analysis & QA",
+                "workflow-title": "Overall Workflow",
+                "workflow-desc": "The AEM QA System consists of 2 main parts and 5 core steps from data collection to analysis. Click on each step in the diagram below to navigate to the corresponding explanation.",
+                "part1-title": "Part 1: Data Collection",
+                "part1-subtitle": "Collector App",
+                "part2-1-title": "Part 2.1: Data Processing",
+                "part2-1-subtitle": "Admin Functions",
+                "part2-2-title": "Part 2.2: Analysis & QA",
+                "part2-2-subtitle": "QA Workstation",
+                "part1-full-title": "Part 1: Data Collection (Collector App)",
+                "part1-desc": "The process of collecting original data required for analysis from AEM server and creating a single package file (`.zip`).",
+                "step2-1-title": "2.1. Collector App Execution and Information Input",
+                "step2-1-desc": "Run `app.py` to open the 'AEM Content Collection and Packaging Tool'. Please enter the following information accurately.",
+                "auth-info": "① AEM Authentication Information",
+                "username": "AEM Username",
+                "password": "AEM Password",
+                "page-list": "② Page List File",
+                "page-list-desc": "Upload a .txt file containing the page paths to be collected.",
+                "step2-2-title": "2.2. Start Collection and Download Results",
+                "step2-2-desc": "After entering all information, click the `[🚀 Start Collection]` button. When the task is completed, click the `[📥 Download (package name).zip]` button to save the results.",
+                "important": "📌 Important",
+                "important-note": "The `.zip` file generated in this step is an essential input file for loading data into the system in Part 2.",
+                "part2-full-title": "Part 2: Data Analysis & QA (AEM QA System)",
+                "part2-desc": "The process of loading collected data into the system and performing actual QA tasks through version comparison analysis and AI-based search.",
+                "admin-tab": "⚙️ Administrator Tasks (Admin)",
+                "qa-tab": "📊 QA Analyst Tasks (QA Workstation)",
+                "step3-1-title": "3.1. Data Loading and Processing",
+                "step3-1-desc": "Initial setup tasks performed when receiving new content packages. Run `Home.py` to access the main system.",
+                "data-loading": "Data Loading:",
+                "data-loading-desc": "Upload the `.zip` package created in Part 1 from the sidebar `[Data Loading]` menu.",
+                "tm-processing": "TM Processing and Indexing:",
+                "tm-processing-desc": "Select language pairs and start the pipeline from the sidebar `[TM Processing]` menu. In this process, the system automatically separates content and generates vector data for AI search.",
+                "tip": "✅ Tip",
+                "tip-desc": "These tasks only need to be performed once when analyzing new data. After that, you will mainly use QA analyst tasks.",
+                "step3-2-title": "3.2. Analysis Using QA Dashboard",
+                "step3-2-desc": "Analyze content changes between versions from the sidebar `[QA Dashboard]` menu.",
+                "upload-pages": "Upload Page List:",
+                "upload-pages-desc": "Upload a .csv file containing the list of pages to be reviewed.",
+                "select-versions": "Select Versions:",
+                "select-versions-desc": "Select the source version and target version that will be the basis for analysis.",
+                "run-analysis": "Run Analysis:",
+                "run-analysis-desc": "Click the `[🚀 Run Page Analysis]` button to display page-by-page change status, number of QA items, change rate, etc. in the table.",
+                "download-report": "Download Report:",
+                "download-report-desc": "Analysis results can be downloaded as `[📄 Excel Report]` or `[🌐 HTML Report]` for sharing.",
+                "step3-3-title": "3.3. Advanced Search",
+                "step3-3-desc": "Verify translation consistency through AI-based semantic search from the sidebar `[Advanced Search]` menu.",
+                "search-options": "Select Search Options:",
+                "search-options-desc": "Select target language and collection (confirmed TM, glossary, etc.).",
+                "search-input": "Enter Search Terms:",
+                "search-input-desc": "Enter the source text for which you want to check translation quality.",
+                "search-results": "Check Results:",
+                "search-results-desc": "The system finds semantically similar translation cases and shows them along with source/target text, source, and similarity."
+            },
+            ja: {
+                "main-title": "AEM QAシステム ユーザーマニュアル",
+                "nav-part1": "Part 1: データ収集",
+                "nav-part2": "Part 2: 分析・QA",
+                "workflow-title": "全体ワークフロー",
+                "workflow-desc": "AEM QAシステムはデータ収集から分析まで2つの主要パートと5つのコアステップで構成されています。下記図の各ステップをクリックすると該当説明に移動します。",
+                "part1-title": "Part 1: データ収集",
+                "part1-subtitle": "Collector App",
+                "part2-1-title": "Part 2.1: データ処理",
+                "part2-1-subtitle": "Admin機能",
+                "part2-2-title": "Part 2.2: 分析・QA",
+                "part2-2-subtitle": "QA Workstation",
+                "part1-full-title": "Part 1: データ収集 (Collector App)",
+                "part1-desc": "分析に必要な原本データをAEMサーバーから収集し、単一パッケージファイル（`.zip`）を作成するプロセスです。",
+                "step2-1-title": "2.1. Collector App実行・情報入力",
+                "step2-1-desc": "`app.py`を実行して「AEMコンテンツ収集・パッケージングツール」を開きます。以下の情報を正確に入力してください。",
+                "auth-info": "① AEM認証情報",
+                "username": "AEMユーザー名",
+                "password": "AEMパスワード",
+                "page-list": "② ページリストファイル",
+                "page-list-desc": "収集するページパスが含まれた.txtファイルをアップロードします。",
+                "step2-2-title": "2.2. 収集開始・結果ダウンロード",
+                "step2-2-desc": "すべての情報入力後、`[🚀 収集開始]`ボタンをクリックします。作業完了後、`[📥 (パッケージ名).zip ダウンロード]`ボタンをクリックして結果を保存してください。",
+                "important": "📌 重要",
+                "important-note": "このステップで生成された`.zip`ファイルは、Part 2でデータをシステムに格納するための必須入力ファイルです。",
+                "part2-full-title": "Part 2: データ分析・QA (AEM QA System)",
+                "part2-desc": "収集されたデータをシステムに格納し、バージョン間比較分析・AI基盤検索を通じて実際のQA作業を実行するプロセスです。",
+                "admin-tab": "⚙️ 管理者作業 (Admin)",
+                "qa-tab": "📊 QA分析者作業 (QA Workstation)",
+                "step3-1-title": "3.1. データ格納・処理",
+                "step3-1-desc": "新しいコンテンツパッケージを受け取った際に実行する初期設定作業です。`Home.py`を実行してメインシステムにアクセスしてください。",
+                "data-loading": "データ格納：",
+                "data-loading-desc": "サイドバー`[データ格納]`メニューからPart 1で生成した`.zip`パッケージをアップロードします。",
+                "tm-processing": "TM処理・インデックス化：",
+                "tm-processing-desc": "サイドバー`[TM処理]`メニューから言語ペアを選択し、パイプラインを開始します。このプロセスでシステムが自動的にコンテンツを分離し、AI検索用のベクトルデータを生成します。",
+                "tip": "✅ Tip",
+                "tip-desc": "これらの作業は新しいデータを分析する際に一度だけ実行すればよいです。その後は主にQA分析者作業を使用することになります。",
+                "step3-2-title": "3.2. QAダッシュボードを利用した分析",
+                "step3-2-desc": "サイドバー`[QAダッシュボード]`メニューからバージョン間コンテンツ変更事項を分析します。",
+                "upload-pages": "ページリストアップロード：",
+                "upload-pages-desc": "検収するページリストが含まれた.csvファイルをアップロードします。",
+                "select-versions": "バージョン選択：",
+                "select-versions-desc": "分析の基準となるソース(Source)バージョンとターゲット(Target)バージョンを選択します。",
+                "run-analysis": "分析実行：",
+                "run-analysis-desc": "`[🚀 ページ分析実行]`ボタンをクリックすると、テーブルにページ別変更状態、QA項目数、変更率などが表示されます。",
+                "download-report": "レポートダウンロード：",
+                "download-report-desc": "分析結果を`[📄 Excelレポート]`または`[🌐 HTMLレポート]`でダウンロードして共有できます。",
+                "step3-3-title": "3.3. 高度検索",
+                "step3-3-desc": "サイドバー`[高度検索]`メニューからAI基盤セマンティック検索を通じて翻訳の一貫性を検証します。",
+                "search-options": "検索オプション選択：",
+                "search-options-desc": "対象言語とコレクション（確定TM、用語集など）を選択します。",
+                "search-input": "検索語入力：",
+                "search-input-desc": "翻訳品質を確認したい原文テキストを入力します。",
+                "search-results": "結果確認：",
+                "search-results-desc": "システムが意味的に類似した翻訳事例を見つけ、ソース/ターゲットテキスト、出所、類似度と共に表示します。"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function updateContent(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            currentLang = lang;
+        }
+
+        function updateLanguageButtons(activeLang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === activeLang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Language switching functionality
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    updateContent(lang);
+                    updateLanguageButtons(lang);
+                });
+            });
+
+            // Tab functionality
+            const tabButtons = {
+                admin: document.getElementById('tab-admin'),
+                qa: document.getElementById('tab-qa'),
+            };
+            const tabContents = {
+                admin: document.getElementById('content-admin'),
+                qa: document.getElementById('content-qa'),
+            };
+
+            function switchTab(tabName) {
+                Object.values(tabButtons).forEach(btn => btn.classList.remove('active'));
+                Object.values(tabContents).forEach(content => content.classList.add('hidden'));
+
+                tabButtons[tabName].classList.add('active');
+                tabContents[tabName].classList.remove('hidden');
+            }
+
+            tabButtons.admin.addEventListener('click', () => switchTab('admin'));
+            tabButtons.qa.addEventListener('click', () => switchTab('qa'));
+
+            // Link from workflow diagram to tabs
+            const adminTaskLink = document.querySelector('a[href="#admin-tasks"]');
+            const qaTaskLink = document.querySelector('a[href="#qa-tasks"]');
+
+            if(adminTaskLink) {
+                adminTaskLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchTab('admin');
+                    document.getElementById('part2').scrollIntoView();
+                });
+            }
+            if(qaTaskLink) {
+                qaTaskLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchTab('qa');
+                    document.getElementById('part2').scrollIntoView();
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

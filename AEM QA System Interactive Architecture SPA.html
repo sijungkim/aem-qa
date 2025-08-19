@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEM QA System - Interactive Technical Specification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .diagram-node, .module-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .diagram-node:hover, .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .arrow {
+            position: relative;
+            color: #64748b;
+        }
+        .arrow-line-v {
+            width: 2px;
+            background-color: #cbd5e1;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .arrow-line-h {
+            height: 2px;
+            background-color: #cbd5e1;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+        .arrow-point-down::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #64748b;
+        }
+        .arrow-point-right::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 6px solid #64748b;
+        }
+        .highlight {
+            border-color: #0ea5e9 !important;
+            background-color: #f0f9ff !important;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .lang-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .lang-btn.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .lang-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl md:text-2xl font-bold text-slate-800" data-i18n="main-title">AEM QA System 기술 명세서</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <div class="flex space-x-1 bg-slate-100 rounded-lg p-1">
+                        <button class="lang-btn active px-3 py-1 rounded text-sm font-medium" data-lang="ko">🇰🇷 한국어</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="en">🇺🇸 English</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="ja">🇯🇵 日本語</button>
+                    </div>
+                    <nav class="hidden md:flex md:space-x-8">
+                        <a href="#architecture" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-architecture">아키텍처</a>
+                        <a href="#workflow" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-workflow">워크플로우</a>
+                        <a href="#components" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-components">핵심 모듈 및 DB</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="architecture" class="mb-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center" data-i18n="arch-title">1. 시스템 아키텍처</h2>
+            <p class="text-center text-lg text-slate-600 mb-12 max-w-3xl mx-auto" data-i18n="arch-desc">
+                시스템을 구성하는 주요 컴포넌트와 데이터 흐름의 전체적인 그림입니다. 각 컴포넌트를 클릭하면 아래 상세 섹션에서 관련 내용이 강조 표시됩니다.
+            </p>
+
+            <div class="p-6 bg-white rounded-xl shadow-lg border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-10 gap-4">
+                    <!-- Users & Collector -->
+                    <div class="md:col-span-2 flex flex-col items-center space-y-4">
+                        <div class="diagram-node bg-slate-100 p-4 rounded-lg border-2 border-slate-200 w-full text-center cursor-pointer" data-highlight="user">
+                            <h3 class="font-bold text-lg">👨‍💻👩‍🔬 <span data-i18n="users">사용자</span></h3>
+                            <p class="text-sm text-slate-500 mt-1" data-i18n="users-subtitle">Admin & QA Analyst</p>
+                        </div>
+                        <div class="arrow-line-v h-8 arrow-point-down"></div>
+                        <div class="diagram-node bg-sky-100 p-4 rounded-lg border-2 border-sky-200 w-full text-center cursor-pointer" data-highlight="collector">
+                            <h3 class="font-bold text-lg">📲 <span data-i18n="collector-app">Collector App</span></h3>
+                        </div>
+                    </div>
+                    <!-- Arrows -->
+                    <div class="md:col-span-1 flex flex-col md:flex-row items-center justify-center">
+                         <div class="arrow-line-h w-full h-16 md:h-full md:w-auto arrow-point-right"></div>
+                    </div>
+                    <!-- Main System -->
+                    <div class="md:col-span-4 flex flex-col items-center space-y-4">
+                        <div class="diagram-node bg-indigo-100 p-4 rounded-lg border-2 border-indigo-200 w-full text-center cursor-pointer" data-highlight="system">
+                            <h3 class="font-bold text-lg">⚙️ <span data-i18n="main-system">AEM QA 분석 시스템</span></h3>
+                            <div class="mt-2 p-2 bg-white rounded">
+                                <p class="font-semibold text-sm" data-i18n="ui-layer">UI Layer (Streamlit)</p>
+                            </div>
+                            <div class="mt-2 p-2 bg-white rounded">
+                                <p class="font-semibold text-sm" data-i18n="backend-layer">Backend & Processing Layer</p>
+                            </div>
+                        </div>
+                        <div class="arrow-line-v h-8 arrow-point-down"></div>
+                        <div class="diagram-node bg-emerald-100 p-4 rounded-lg border-2 border-emerald-200 w-full text-center cursor-pointer" data-highlight="db">
+                            <h3 class="font-bold text-lg">🗃️🧠 <span data-i18n="data-storage">데이터 저장소</span></h3>
+                            <p class="text-sm text-slate-500 mt-1">MongoDB & ChromaDB</p>
+                        </div>
+                    </div>
+                    <!-- Arrows -->
+                    <div class="md:col-span-1 flex flex-col md:flex-row items-center justify-center">
+                        <div class="arrow-line-h w-full h-16 md:h-full md:w-auto arrow-point-right"></div>
+                    </div>
+                    <!-- External -->
+                    <div class="md:col-span-2 flex flex-col items-center justify-center">
+                         <div class="diagram-node bg-slate-100 p-4 rounded-lg border-2 border-slate-200 w-full text-center cursor-pointer" data-highlight="external">
+                            <h3 class="font-bold text-lg">🌐 <span data-i18n="external-system">외부 시스템</span></h3>
+                            <p class="text-sm text-slate-500 mt-1" data-i18n="aem-server">AEM Author Server</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-24">
+
+        <section id="workflow" class="mb-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center" data-i18n="workflow-title">2. 상세 데이터 워크플로우</h2>
+            <p class="text-center text-lg text-slate-600 mb-12 max-w-3xl mx-auto" data-i18n="workflow-desc">
+                데이터가 생성되어 최종 분석 결과로 제공되기까지의 전체 과정을 단계별로 보여줍니다.
+            </p>
+
+            <div class="space-y-8">
+                <div id="phase-collector" class="p-6 bg-white rounded-xl shadow-lg border-2 border-transparent workflow-phase">
+                    <h3 class="text-2xl font-bold mb-6 text-sky-700" data-i18n="phase1-title">Phase 1: 데이터 수집</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center" data-i18n="step1">1. 페이지 목록 입력</div>
+                        <div class="arrow-point-down md:arrow-point-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center" data-i18n="step2">2. AEM 콘텐츠 수집</div>
+                        <div class="arrow-point-down md:arrow-point-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-green-50 border border-green-200 rounded-md text-center" data-i18n="step3">3. 콘텐츠 패키지(.zip) 생성</div>
+                    </div>
+                </div>
+
+                <div id="phase-system" class="p-6 bg-white rounded-xl shadow-lg border-2 border-transparent workflow-phase">
+                    <h3 class="text-2xl font-bold mb-6 text-indigo-700" data-i18n="phase2-title">Phase 2: 처리 및 인덱싱</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center" data-i18n="step4">4. 데이터 적재 (MongoDB)</div>
+                        <div class="arrow-point-down md:arrow-point-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center" data-i18n="step5">5. TM 구축 및 분리</div>
+                        <div class="arrow-point-down md:arrow-point-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-purple-50 border border-purple-200 rounded-md text-center" data-i18n="step6">6. 벡터 인덱싱 (ChromaDB)</div>
+                    </div>
+                </div>
+
+                <div id="phase-user" class="p-6 bg-white rounded-xl shadow-lg border-2 border-transparent workflow-phase">
+                    <h3 class="text-2xl font-bold mb-6 text-emerald-700" data-i18n="phase3-title">Phase 3: 분석 및 QA</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center" data-i18n="step7">7. 버전 간 비교 분석</div>
+                        <div class="arrow-point-down md:arrow-point-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-slate-50 border rounded-md text-center" data-i18n="step8">8. 의미 기반 검색</div>
+                        <div class="arrow-point-down md:arrow-point-right text-2xl font-mono">→</div>
+                        <div class="diagram-node p-3 bg-green-50 border border-green-200 rounded-md text-center" data-i18n="step9">9. 대시보드 및 리포트 제공</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <hr class="border-slate-200 my-24">
+
+        <section id="components">
+             <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center" data-i18n="components-title">3. 핵심 모듈 및 데이터베이스 스키마</h2>
+            <p class="text-center text-lg text-slate-600 mb-12 max-w-3xl mx-auto" data-i18n="components-desc">
+                시스템을 구성하는 주요 기술 요소와 데이터 구조에 대한 설명입니다.
+            </p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800" data-i18n="core-modules">핵심 모듈</h3>
+                    <div class="space-y-4">
+                        <div id="module-segmenter" class="module-card p-4 bg-white rounded-lg border-2 border-slate-200">
+                            <h4 class="font-bold text-lg text-indigo-700">SemanticSegmenter</h4>
+                            <p class="text-sm text-slate-600 mt-1" data-i18n="segmenter-desc">AI 임베딩과 동적 프로그래밍을 사용하여 긴 텍스트를 의미 단위로 자동 분할합니다.</p>
+                            <p class="text-xs mt-2 font-mono text-slate-500" data-i18n="segmenter-tech">기술: sentence-transformers, spacy</p>
+                        </div>
+                        <div id="module-analyzer" class="module-card p-4 bg-white rounded-lg border-2 border-slate-200">
+                            <h4 class="font-bold text-lg text-indigo-700">PageAnalyzer</h4>
+                            <p class="text-sm text-slate-600 mt-1" data-i18n="analyzer-desc">두 콘텐츠 버전 간의 컴포넌트를 해시(hash) 기반으로 비교하여 추가, 수정, 삭제된 항목을 식별합니다.</p>
+                             <p class="text-xs mt-2 font-mono text-slate-500" data-i18n="analyzer-tech">기술: pymongo, Hashing</p>
+                        </div>
+                         <div id="module-ingestor" class="module-card p-4 bg-white rounded-lg border-2 border-slate-200">
+                            <h4 class="font-bold text-lg text-indigo-700">DataIngestor</h4>
+                            <p class="text-sm text-slate-600 mt-1" data-i18n="ingestor-desc">수집된 패키지를 분석하고, 중복을 방지하며 컴포넌트 단위로 분해하여 MongoDB에 저장합니다.</p>
+                             <p class="text-xs mt-2 font-mono text-slate-500" data-i18n="ingestor-tech">기술: zipfile, hashlib, pymongo</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800" data-i18n="db-schema">데이터베이스 스키마</h3>
+                    <div class="space-y-4">
+                        <div id="db-mongo" class="p-4 bg-white rounded-lg border-2 border-slate-200">
+                            <h4 class="font-bold text-lg text-emerald-700">🗃️ MongoDB</h4>
+                            <ul class="mt-2 list-disc list-inside text-sm space-y-1 text-slate-600">
+                                <li><b>page_components:</b> <span data-i18n="mongo-components">원본 컴포넌트 데이터</span></li>
+                                <li><b>clean_translation_memory_*:</b> <span data-i18n="mongo-tm">정제된 텍스트 TM</span></li>
+                                <li><b>html_component_archive_*:</b> <span data-i18n="mongo-archive">HTML 보관용 데이터</span></li>
+                            </ul>
+                        </div>
+                        <div id="db-chroma" class="p-4 bg-white rounded-lg border-2 border-slate-200">
+                            <h4 class="font-bold text-lg text-purple-700">🧠 ChromaDB</h4>
+                             <ul class="mt-2 list-disc list-inside text-sm space-y-1 text-slate-600">
+                                <li><b>tm_*:</b> <span data-i18n="chroma-collection">의미 검색을 위한 텍스트 벡터 컬렉션</span></li>
+                                <li class="ml-4"><b>Document:</b> source_text</li>
+                                <li class="ml-4"><b>Metadata:</b> <span data-i18n="chroma-metadata">target_text, page_path 등</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Translation dictionary
+        const translations = {
+            ko: {
+                "main-title": "AEM QA System 기술 명세서",
+                "nav-architecture": "아키텍처",
+                "nav-workflow": "워크플로우",
+                "nav-components": "핵심 모듈 및 DB",
+                "arch-title": "1. 시스템 아키텍처",
+                "arch-desc": "시스템을 구성하는 주요 컴포넌트와 데이터 흐름의 전체적인 그림입니다. 각 컴포넌트를 클릭하면 아래 상세 섹션에서 관련 내용이 강조 표시됩니다.",
+                "users": "사용자",
+                "users-subtitle": "Admin & QA Analyst",
+                "collector-app": "Collector App",
+                "main-system": "AEM QA 분석 시스템",
+                "ui-layer": "UI Layer (Streamlit)",
+                "backend-layer": "Backend & Processing Layer",
+                "data-storage": "데이터 저장소",
+                "external-system": "외부 시스템",
+                "aem-server": "AEM Author Server",
+                "workflow-title": "2. 상세 데이터 워크플로우",
+                "workflow-desc": "데이터가 생성되어 최종 분석 결과로 제공되기까지의 전체 과정을 단계별로 보여줍니다.",
+                "phase1-title": "Phase 1: 데이터 수집",
+                "step1": "1. 페이지 목록 입력",
+                "step2": "2. AEM 콘텐츠 수집",
+                "step3": "3. 콘텐츠 패키지(.zip) 생성",
+                "phase2-title": "Phase 2: 처리 및 인덱싱",
+                "step4": "4. 데이터 적재 (MongoDB)",
+                "step5": "5. TM 구축 및 분리",
+                "step6": "6. 벡터 인덱싱 (ChromaDB)",
+                "phase3-title": "Phase 3: 분석 및 QA",
+                "step7": "7. 버전 간 비교 분석",
+                "step8": "8. 의미 기반 검색",
+                "step9": "9. 대시보드 및 리포트 제공",
+                "components-title": "3. 핵심 모듈 및 데이터베이스 스키마",
+                "components-desc": "시스템을 구성하는 주요 기술 요소와 데이터 구조에 대한 설명입니다.",
+                "core-modules": "핵심 모듈",
+                "segmenter-desc": "AI 임베딩과 동적 프로그래밍을 사용하여 긴 텍스트를 의미 단위로 자동 분할합니다.",
+                "segmenter-tech": "기술: sentence-transformers, spacy",
+                "analyzer-desc": "두 콘텐츠 버전 간의 컴포넌트를 해시(hash) 기반으로 비교하여 추가, 수정, 삭제된 항목을 식별합니다.",
+                "analyzer-tech": "기술: pymongo, Hashing",
+                "ingestor-desc": "수집된 패키지를 분석하고, 중복을 방지하며 컴포넌트 단위로 분해하여 MongoDB에 저장합니다.",
+                "ingestor-tech": "기술: zipfile, hashlib, pymongo",
+                "db-schema": "데이터베이스 스키마",
+                "mongo-components": "원본 컴포넌트 데이터",
+                "mongo-tm": "정제된 텍스트 TM",
+                "mongo-archive": "HTML 보관용 데이터",
+                "chroma-collection": "의미 검색을 위한 텍스트 벡터 컬렉션",
+                "chroma-metadata": "target_text, page_path 등"
+            },
+            en: {
+                "main-title": "AEM QA System Technical Specification",
+                "nav-architecture": "Architecture",
+                "nav-workflow": "Workflow",
+                "nav-components": "Core Modules & DB",
+                "arch-title": "1. System Architecture",
+                "arch-desc": "An overall view of the main components and data flow that make up the system. Click on each component to highlight related content in the detailed sections below.",
+                "users": "Users",
+                "users-subtitle": "Admin & QA Analyst",
+                "collector-app": "Collector App",
+                "main-system": "AEM QA Analysis System",
+                "ui-layer": "UI Layer (Streamlit)",
+                "backend-layer": "Backend & Processing Layer",
+                "data-storage": "Data Storage",
+                "external-system": "External System",
+                "aem-server": "AEM Author Server",
+                "workflow-title": "2. Detailed Data Workflow",
+                "workflow-desc": "A step-by-step view of the entire process from data generation to final analysis results.",
+                "phase1-title": "Phase 1: Data Collection",
+                "step1": "1. Page List Input",
+                "step2": "2. AEM Content Collection",
+                "step3": "3. Content Package (.zip) Generation",
+                "phase2-title": "Phase 2: Processing & Indexing",
+                "step4": "4. Data Loading (MongoDB)",
+                "step5": "5. TM Construction & Separation",
+                "step6": "6. Vector Indexing (ChromaDB)",
+                "phase3-title": "Phase 3: Analysis & QA",
+                "step7": "7. Version Comparison Analysis",
+                "step8": "8. Semantic-based Search",
+                "step9": "9. Dashboard & Report Provision",
+                "components-title": "3. Core Modules & Database Schema",
+                "components-desc": "Description of the main technical elements and data structures that make up the system.",
+                "core-modules": "Core Modules",
+                "segmenter-desc": "Automatically segments long text into semantic units using AI embeddings and dynamic programming.",
+                "segmenter-tech": "Technologies: sentence-transformers, spacy",
+                "analyzer-desc": "Compares components between two content versions using hash-based comparison to identify added, modified, and deleted items.",
+                "analyzer-tech": "Technologies: pymongo, Hashing",
+                "ingestor-desc": "Analyzes collected packages, prevents duplication, and decomposes them into component units for storage in MongoDB.",
+                "ingestor-tech": "Technologies: zipfile, hashlib, pymongo",
+                "db-schema": "Database Schema",
+                "mongo-components": "Original component data",
+                "mongo-tm": "Cleaned text TM",
+                "mongo-archive": "HTML archive data",
+                "chroma-collection": "Text vector collection for semantic search",
+                "chroma-metadata": "target_text, page_path, etc."
+            },
+            ja: {
+                "main-title": "AEM QAシステム技術仕様書",
+                "nav-architecture": "アーキテクチャ",
+                "nav-workflow": "ワークフロー",
+                "nav-components": "コアモジュール・DB",
+                "arch-title": "1. システムアーキテクチャ",
+                "arch-desc": "システムを構成する主要コンポーネントとデータフローの全体像です。各コンポーネントをクリックすると、下記の詳細セクションで関連内容がハイライト表示されます。",
+                "users": "ユーザー",
+                "users-subtitle": "Admin & QA Analyst",
+                "collector-app": "Collector App",
+                "main-system": "AEM QA分析システム",
+                "ui-layer": "UIレイヤー (Streamlit)",
+                "backend-layer": "バックエンド・処理レイヤー",
+                "data-storage": "データストレージ",
+                "external-system": "外部システム",
+                "aem-server": "AEM Author Server",
+                "workflow-title": "2. 詳細データワークフロー",
+                "workflow-desc": "データが生成されて最終分析結果として提供されるまでの全体プロセスを段階別に示します。",
+                "phase1-title": "Phase 1: データ収集",
+                "step1": "1. ページリスト入力",
+                "step2": "2. AEMコンテンツ収集",
+                "step3": "3. コンテンツパッケージ(.zip)生成",
+                "phase2-title": "Phase 2: 処理・インデックス化",
+                "step4": "4. データ格納 (MongoDB)",
+                "step5": "5. TM構築・分離",
+                "step6": "6. ベクトルインデックス化 (ChromaDB)",
+                "phase3-title": "Phase 3: 分析・QA",
+                "step7": "7. バージョン間比較分析",
+                "step8": "8. セマンティック検索",
+                "step9": "9. ダッシュボード・レポート提供",
+                "components-title": "3. コアモジュール・データベーススキーマ",
+                "components-desc": "システムを構成する主要技術要素とデータ構造についての説明です。",
+                "core-modules": "コアモジュール",
+                "segmenter-desc": "AI埋め込みと動的プログラミングを使用して、長いテキストを意味単位で自動分割します。",
+                "segmenter-tech": "技術: sentence-transformers, spacy",
+                "analyzer-desc": "2つのコンテンツバージョン間のコンポーネントをハッシュベースで比較し、追加・修正・削除された項目を識別します。",
+                "analyzer-tech": "技術: pymongo, Hashing",
+                "ingestor-desc": "収集されたパッケージを分析し、重複を防ぎながらコンポーネント単位に分解してMongoDBに保存します。",
+                "ingestor-tech": "技術: zipfile, hashlib, pymongo",
+                "db-schema": "データベーススキーマ",
+                "mongo-components": "原本コンポーネントデータ",
+                "mongo-tm": "精製されたテキストTM",
+                "mongo-archive": "HTML保管用データ",
+                "chroma-collection": "セマンティック検索用テキストベクトルコレクション",
+                "chroma-metadata": "target_text, page_path など"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function updateContent(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            currentLang = lang;
+        }
+
+        function updateLanguageButtons(activeLang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === activeLang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Language switching functionality
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    updateContent(lang);
+                    updateLanguageButtons(lang);
+                });
+            });
+
+            // Existing highlight functionality
+            const highlightTargets = document.querySelectorAll('[data-highlight]');
+            
+            const highlightMap = {
+                'user': ['phase-user'],
+                'collector': ['phase-collector'],
+                'system': ['phase-system', 'module-segmenter', 'module-analyzer', 'module-ingestor'],
+                'db': ['db-mongo', 'db-chroma'],
+                'external': ['phase-collector'],
+            };
+
+            highlightTargets.forEach(target => {
+                target.addEventListener('click', () => {
+                    const key = target.dataset.highlight;
+                    const elementsToHighlight = highlightMap[key] || [];
+                    
+                    document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+
+                    if (elementsToHighlight.length > 0) {
+                        elementsToHighlight.forEach(id => {
+                            const element = document.getElementById(id);
+                            if (element) {
+                                element.classList.add('highlight');
+                            }
+                        });
+                        const firstElement = document.getElementById(elementsToHighlight[0]);
+                        if(firstElement) {
+                           firstElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

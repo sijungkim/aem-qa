@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: AEM QA System Installation & Operation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .task-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #475569;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+        .checklist-item input:checked + label {
+            text-decoration: line-through;
+            color: #64748b;
+        }
+        .lang-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .lang-btn.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .lang-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900" data-i18n="main-title">🚀 AEM QA System 운영 가이드</h1>
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <div class="flex space-x-1 bg-slate-100 rounded-lg p-1">
+                        <button class="lang-btn active px-3 py-1 rounded text-sm font-medium" data-lang="ko">🇰🇷 한국어</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="en">🇺🇸 English</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="ja">🇯🇵 日本語</button>
+                    </div>
+                    <nav class="hidden md:flex md:space-x-8">
+                        <a href="#setup" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-setup">설치 및 설정</a>
+                        <a href="#operation" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-operation">운영 및 유지보수</a>
+                        <a href="#troubleshooting" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-troubleshooting">문제 해결</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <section id="intro" class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4" data-i18n="intro-title">시스템 설치 및 운영을 위한 대화형 가이드</h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto" data-i18n="intro-desc">
+                이 가이드는 AEM QA System의 설치부터 운영, 문제 해결까지의 모든 절차를 안내합니다. '설치 및 설정' 섹션의 체크리스트를 따라 진행 상황을 관리하고, 코드 블록의 복사 버튼을 사용하여 명령어를 쉽게 실행하세요.
+            </p>
+        </section>
+
+        <section id="setup" class="mb-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2" data-i18n="setup-title">1. 설치 및 설정 (Installation & Setup)</h2>
+            <p class="text-slate-600 mb-6" data-i18n="setup-desc">시스템을 성공적으로 배포하고 실행하기 위한 단계별 절차입니다.</p>
+            
+            <div class="sticky top-16 bg-white/90 backdrop-blur-md py-4 z-40 mb-6 rounded-lg">
+                <p class="font-semibold mb-2" data-i18n="progress-label">설치 진행률:</p>
+                <div class="w-full bg-slate-200 rounded-full h-4">
+                    <div id="progress-bar" class="bg-sky-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="req-check" class="mr-2 setup-checkbox">
+                        <label for="req-check" class="text-2xl font-semibold" data-i18n="req-check-title">2.1. 시스템 요구사항 확인</label>
+                    </div>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <p class="text-3xl">🖥️</p>
+                            <p class="font-semibold mt-2" data-i18n="req-os">운영체제</p>
+                            <p class="text-sm text-slate-500">Linux/macOS/Windows</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <p class="text-3xl">🐍</p>
+                            <p class="font-semibold mt-2">Python</p>
+                            <p class="text-sm text-slate-500" data-i18n="req-python">3.9 이상</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <p class="text-3xl">💾</p>
+                            <p class="font-semibold mt-2" data-i18n="req-hardware">하드웨어</p>
+                            <p class="text-sm text-slate-500">16GB+ RAM, 50GB+ Storage</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg">
+                            <p class="text-3xl">🗃️</p>
+                            <p class="font-semibold mt-2" data-i18n="req-database">데이터베이스</p>
+                            <p class="text-sm text-slate-500">MongoDB 5.0+, ChromaDB 0.4+</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="env-check" class="mr-2 setup-checkbox">
+                        <label for="env-check" class="text-2xl font-semibold" data-i18n="env-check-title">2.2. 환경 준비</label>
+                    </div>
+                    <div class="mt-4 space-y-4">
+                        <div>
+                            <h4 class="font-medium" data-i18n="env-venv-title">1. Python 가상 환경 생성</h4>
+                            <div class="code-block mt-2">
+                                <pre class="bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto"><code id="code-venv">python -m venv aem_qa_venv
+source aem_qa_venv/bin/activate  # Linux/macOS
+# aem_qa_venv\\Scripts\\activate  # Windows</code></pre>
+                                <button class="copy-btn" data-target="code-venv" data-i18n="copy-btn">복사</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium" data-i18n="env-pip-title">2. 필수 라이브러리 설치</h4>
+                            <div class="code-block mt-2">
+                                <pre class="bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto"><code id="code-pip">pip install -r requirements.txt</code></pre>
+                                <button class="copy-btn" data-target="code-pip" data-i18n="copy-btn">복사</button>
+                            </div>
+                        </div>
+                         <div>
+                            <h4 class="font-medium" data-i18n="env-db-title">3. 데이터베이스 설치 및 실행</h4>
+                            <p class="text-sm text-slate-600 mb-2" data-i18n="env-db-desc">MongoDB는 공식 문서를 참고하여 설치하고, ChromaDB는 아래 명령어로 실행합니다.</p>
+                            <div class="code-block mt-2">
+                                <pre class="bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto"><code id="code-chroma">chroma run --host localhost --port 8000</code></pre>
+                                <button class="copy-btn" data-target="code-chroma" data-i18n="copy-btn">복사</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="config-check" class="mr-2 setup-checkbox">
+                        <label for="config-check" class="text-2xl font-semibold" data-i18n="config-check-title">2.3. 시스템 설정</label>
+                    </div>
+                    <p class="mt-4 text-slate-600" data-i18n="config-desc">프로젝트의 `src/config.py` 파일을 열어 환경에 맞게 주요 변수들을 수정하세요.</p>
+                    <ul class="mt-2 list-disc list-inside text-sm space-y-1 text-slate-500">
+                        <li>`MONGO_CONNECTION_STRING`</li>
+                        <li>`DB_NAME`</li>
+                        <li>`CHROMA_HOST` / `CHROMA_PORT`</li>
+                        <li>`AEM_HOST`</li>
+                    </ul>
+                </div>
+
+                <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="init-check" class="mr-2 setup-checkbox">
+                        <label for="init-check" class="text-2xl font-semibold" data-i18n="init-check-title">2.4. 초기화 스크립트 실행</label>
+                    </div>
+                    <p class="mt-4 text-slate-600 mb-2" data-i18n="init-desc">터미널에서 `src/scripts` 디렉터리로 이동 후 아래 명령어를 실행하고, 메뉴에서 `[1] 컬렉션 생성`을 선택하세요.</p>
+                    <div class="code-block">
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto"><code id="code-init">python setup_collections.py</code></pre>
+                        <button class="copy-btn" data-target="code-init" data-i18n="copy-btn">복사</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-20">
+
+        <section id="operation" class="mb-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6" data-i18n="operation-title">2. 운영 및 유지보수 (Operation & Maintenance)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="op-run-title">3.1. 시스템 실행 및 중지</h3>
+                    <p class="text-slate-600 mb-2" data-i18n="op-run-desc">Collector App과 메인 시스템은 각각 다른 명령어로 실행합니다.</p>
+                    <div class="code-block mt-4">
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto"><code id="code-run"># Collector App 실행
+streamlit run app.py
+
+# AEM QA System (메인) 실행
+streamlit run Home.py</code></pre>
+                        <button class="copy-btn" data-target="code-run" data-i18n="copy-btn">복사</button>
+                    </div>
+                </div>
+                <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="op-monitor-title">3.2. 시스템 모니터링</h3>
+                    <p class="text-slate-600" data-i18n="op-monitor-desc">메인 시스템 사이드바의 `[DB 모니터링]` 메뉴에서 MongoDB와 ChromaDB의 컬렉션, 문서 수, 저장 공간 등의 상태를 실시간으로 확인하세요.</p>
+                </div>
+                <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="op-backup-title">3.3. 데이터 백업 및 복구</h3>
+                     <p class="text-slate-600 mb-2" data-i18n="op-backup-desc">`mongodump`를 사용하여 MongoDB를 백업합니다.</p>
+                    <div class="code-block">
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto"><code id="code-backup">mongodump --uri="mongodb://localhost:27017" --db="aem_qa_system" --out="/path/to/backup/dir"</code></pre>
+                        <button class="copy-btn" data-target="code-backup" data-i18n="copy-btn">복사</button>
+                    </div>
+                    <p class="text-slate-600 mt-4" data-i18n="op-backup-chroma">ChromaDB는 파일 시스템 기반이므로 `chroma/` 디렉터리를 직접 압축하여 백업합니다.</p>
+                </div>
+                 <div class="task-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="op-log-title">3.4. 로그 관리</h3>
+                     <p class="text-slate-600 mb-2" data-i18n="op-log-desc">시스템 실행 시 로그를 파일로 저장하여 문제를 추적할 수 있습니다.</p>
+                    <div class="code-block">
+                        <pre class="bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto"><code id="code-log">streamlit run Home.py > logs/app.log 2>&1 &</code></pre>
+                        <button class="copy-btn" data-target="code-log" data-i18n="copy-btn">복사</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-20">
+
+        <section id="troubleshooting">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6" data-i18n="troubleshooting-title">3. 문제 해결 (Troubleshooting)</h2>
+            <div class="space-y-4">
+                <details class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <summary class="font-semibold cursor-pointer" data-i18n="trouble-module-title">`ModuleNotFoundError` 발생 시</summary>
+                    <p class="mt-2 text-slate-600 text-sm" data-i18n="trouble-module-desc">가상 환경이 활성화되었는지 확인하고, `pip install -r requirements.txt`를 다시 실행하여 모든 라이브러리가 설치되었는지 확인하세요.</p>
+                </details>
+                <details class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <summary class="font-semibold cursor-pointer" data-i18n="trouble-auth-title">AEM 서버 401 (Unauthorized) 오류 발생 시</summary>
+                    <p class="mt-2 text-slate-600 text-sm" data-i18n="trouble-auth-desc">Collector App에 입력한 사용자 이름과 비밀번호가 올바른지, 해당 계정이 AEM 서버에 접근할 권한이 있는지 확인하세요.</p>
+                </details>
+                <details class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <summary class="font-semibold cursor-pointer" data-i18n="trouble-db-title">데이터베이스 연결 실패 시</summary>
+                    <p class="mt-2 text-slate-600 text-sm" data-i18n="trouble-db-desc">MongoDB와 ChromaDB 서버가 정상적으로 실행 중인지 확인하고, `src/config.py` 파일의 접속 정보가 올바른지 확인하세요. `src/scripts/test_mongo_connection.py` 스크립트로 연결을 테스트할 수 있습니다.</p>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Translation dictionary
+        const translations = {
+            ko: {
+                "main-title": "🚀 AEM QA System 운영 가이드",
+                "nav-setup": "설치 및 설정",
+                "nav-operation": "운영 및 유지보수",
+                "nav-troubleshooting": "문제 해결",
+                "intro-title": "시스템 설치 및 운영을 위한 대화형 가이드",
+                "intro-desc": "이 가이드는 AEM QA System의 설치부터 운영, 문제 해결까지의 모든 절차를 안내합니다. '설치 및 설정' 섹션의 체크리스트를 따라 진행 상황을 관리하고, 코드 블록의 복사 버튼을 사용하여 명령어를 쉽게 실행하세요.",
+                "setup-title": "1. 설치 및 설정 (Installation & Setup)",
+                "setup-desc": "시스템을 성공적으로 배포하고 실행하기 위한 단계별 절차입니다.",
+                "progress-label": "설치 진행률:",
+                "req-check-title": "2.1. 시스템 요구사항 확인",
+                "req-os": "운영체제",
+                "req-python": "3.9 이상",
+                "req-hardware": "하드웨어",
+                "req-database": "데이터베이스",
+                "env-check-title": "2.2. 환경 준비",
+                "env-venv-title": "1. Python 가상 환경 생성",
+                "env-pip-title": "2. 필수 라이브러리 설치",
+                "env-db-title": "3. 데이터베이스 설치 및 실행",
+                "env-db-desc": "MongoDB는 공식 문서를 참고하여 설치하고, ChromaDB는 아래 명령어로 실행합니다.",
+                "config-check-title": "2.3. 시스템 설정",
+                "config-desc": "프로젝트의 `src/config.py` 파일을 열어 환경에 맞게 주요 변수들을 수정하세요.",
+                "init-check-title": "2.4. 초기화 스크립트 실행",
+                "init-desc": "터미널에서 `src/scripts` 디렉터리로 이동 후 아래 명령어를 실행하고, 메뉴에서 `[1] 컬렉션 생성`을 선택하세요.",
+                "operation-title": "2. 운영 및 유지보수 (Operation & Maintenance)",
+                "op-run-title": "3.1. 시스템 실행 및 중지",
+                "op-run-desc": "Collector App과 메인 시스템은 각각 다른 명령어로 실행합니다.",
+                "op-monitor-title": "3.2. 시스템 모니터링",
+                "op-monitor-desc": "메인 시스템 사이드바의 `[DB 모니터링]` 메뉴에서 MongoDB와 ChromaDB의 컬렉션, 문서 수, 저장 공간 등의 상태를 실시간으로 확인하세요.",
+                "op-backup-title": "3.3. 데이터 백업 및 복구",
+                "op-backup-desc": "`mongodump`를 사용하여 MongoDB를 백업합니다.",
+                "op-backup-chroma": "ChromaDB는 파일 시스템 기반이므로 `chroma/` 디렉터리를 직접 압축하여 백업합니다.",
+                "op-log-title": "3.4. 로그 관리",
+                "op-log-desc": "시스템 실행 시 로그를 파일로 저장하여 문제를 추적할 수 있습니다.",
+                "troubleshooting-title": "3. 문제 해결 (Troubleshooting)",
+                "trouble-module-title": "`ModuleNotFoundError` 발생 시",
+                "trouble-module-desc": "가상 환경이 활성화되었는지 확인하고, `pip install -r requirements.txt`를 다시 실행하여 모든 라이브러리가 설치되었는지 확인하세요.",
+                "trouble-auth-title": "AEM 서버 401 (Unauthorized) 오류 발생 시",
+                "trouble-auth-desc": "Collector App에 입력한 사용자 이름과 비밀번호가 올바른지, 해당 계정이 AEM 서버에 접근할 권한이 있는지 확인하세요.",
+                "trouble-db-title": "데이터베이스 연결 실패 시",
+                "trouble-db-desc": "MongoDB와 ChromaDB 서버가 정상적으로 실행 중인지 확인하고, `src/config.py` 파일의 접속 정보가 올바른지 확인하세요. `src/scripts/test_mongo_connection.py` 스크립트로 연결을 테스트할 수 있습니다.",
+                "copy-btn": "복사",
+                "copy-success": "복사됨!"
+            },
+            en: {
+                "main-title": "🚀 AEM QA System Operation Guide",
+                "nav-setup": "Installation & Setup",
+                "nav-operation": "Operation & Maintenance",
+                "nav-troubleshooting": "Troubleshooting",
+                "intro-title": "Interactive Guide for System Installation and Operation",
+                "intro-desc": "This guide covers all procedures from installation to operation and troubleshooting of the AEM QA System. Follow the checklist in the 'Installation & Setup' section to manage progress, and use the copy buttons in code blocks to easily execute commands.",
+                "setup-title": "1. Installation & Setup",
+                "setup-desc": "Step-by-step procedures for successfully deploying and running the system.",
+                "progress-label": "Installation Progress:",
+                "req-check-title": "2.1. System Requirements Check",
+                "req-os": "Operating System",
+                "req-python": "3.9 or higher",
+                "req-hardware": "Hardware",
+                "req-database": "Database",
+                "env-check-title": "2.2. Environment Preparation",
+                "env-venv-title": "1. Create Python Virtual Environment",
+                "env-pip-title": "2. Install Required Libraries",
+                "env-db-title": "3. Database Installation and Execution",
+                "env-db-desc": "Install MongoDB by referring to official documentation, and run ChromaDB with the command below.",
+                "config-check-title": "2.3. System Configuration",
+                "config-desc": "Open the `src/config.py` file in the project and modify key variables according to your environment.",
+                "init-check-title": "2.4. Run Initialization Script",
+                "init-desc": "Navigate to the `src/scripts` directory in terminal, run the command below, and select `[1] Create Collection` from the menu.",
+                "operation-title": "2. Operation & Maintenance",
+                "op-run-title": "3.1. System Start and Stop",
+                "op-run-desc": "Collector App and main system are executed with different commands.",
+                "op-monitor-title": "3.2. System Monitoring",
+                "op-monitor-desc": "Check the status of MongoDB and ChromaDB collections, document count, storage space, etc., in real-time from the `[DB Monitoring]` menu in the main system sidebar.",
+                "op-backup-title": "3.3. Data Backup and Recovery",
+                "op-backup-desc": "Use `mongodump` to backup MongoDB.",
+                "op-backup-chroma": "ChromaDB is file system-based, so backup by directly compressing the `chroma/` directory.",
+                "op-log-title": "3.4. Log Management",
+                "op-log-desc": "You can track issues by saving logs to files when running the system.",
+                "troubleshooting-title": "3. Troubleshooting",
+                "trouble-module-title": "When `ModuleNotFoundError` occurs",
+                "trouble-module-desc": "Check if the virtual environment is activated and run `pip install -r requirements.txt` again to ensure all libraries are installed.",
+                "trouble-auth-title": "When AEM server 401 (Unauthorized) error occurs",
+                "trouble-auth-desc": "Check if the username and password entered in Collector App are correct and if the account has permission to access the AEM server.",
+                "trouble-db-title": "When database connection fails",
+                "trouble-db-desc": "Check if MongoDB and ChromaDB servers are running normally and verify the connection information in the `src/config.py` file. You can test the connection with the `src/scripts/test_mongo_connection.py` script.",
+                "copy-btn": "Copy",
+                "copy-success": "Copied!"
+            },
+            ja: {
+                "main-title": "🚀 AEM QAシステム運用ガイド",
+                "nav-setup": "インストール・設定",
+                "nav-operation": "運用・メンテナンス",
+                "nav-troubleshooting": "トラブルシューティング",
+                "intro-title": "システムインストール・運用のためのインタラクティブガイド",
+                "intro-desc": "このガイドはAEM QAシステムのインストールから運用、トラブルシューティングまでのすべての手順を案内します。「インストール・設定」セクションのチェックリストに従って進行状況を管理し、コードブロックのコピーボタンを使用してコマンドを簡単に実行してください。",
+                "setup-title": "1. インストール・設定",
+                "setup-desc": "システムを成功的にデプロイし実行するためのステップバイステップ手順です。",
+                "progress-label": "インストール進行率:",
+                "req-check-title": "2.1. システム要件確認",
+                "req-os": "オペレーティングシステム",
+                "req-python": "3.9以上",
+                "req-hardware": "ハードウェア",
+                "req-database": "データベース",
+                "env-check-title": "2.2. 環境準備",
+                "env-venv-title": "1. Python仮想環境作成",
+                "env-pip-title": "2. 必須ライブラリインストール",
+                "env-db-title": "3. データベースインストール・実行",
+                "env-db-desc": "MongoDBは公式ドキュメントを参考にインストールし、ChromaDBは以下のコマンドで実行します。",
+                "config-check-title": "2.3. システム設定",
+                "config-desc": "プロジェクトの`src/config.py`ファイルを開いて環境に合わせて主要変数を修正してください。",
+                "init-check-title": "2.4. 初期化スクリプト実行",
+                "init-desc": "ターミナルで`src/scripts`ディレクトリに移動後、以下のコマンドを実行し、メニューから`[1] コレクション作成`を選択してください。",
+                "operation-title": "2. 運用・メンテナンス",
+                "op-run-title": "3.1. システム起動・停止",
+                "op-run-desc": "Collector Appとメインシステムはそれぞれ異なるコマンドで実行します。",
+                "op-monitor-title": "3.2. システムモニタリング",
+                "op-monitor-desc": "メインシステムサイドバーの`[DBモニタリング]`メニューでMongoDBとChromaDBのコレクション、ドキュメント数、ストレージ容量などの状態をリアルタイムで確認してください。",
+                "op-backup-title": "3.3. データバックアップ・復旧",
+                "op-backup-desc": "`mongodump`を使用してMongoDBをバックアップします。",
+                "op-backup-chroma": "ChromaDBはファイルシステムベースなので`chroma/`ディレクトリを直接圧縮してバックアップします。",
+                "op-log-title": "3.4. ログ管理",
+                "op-log-desc": "システム実行時にログをファイルに保存して問題を追跡できます。",
+                "troubleshooting-title": "3. トラブルシューティング",
+                "trouble-module-title": "`ModuleNotFoundError`発生時",
+                "trouble-module-desc": "仮想環境が有効化されているか確認し、`pip install -r requirements.txt`を再実行してすべてのライブラリがインストールされているか確認してください。",
+                "trouble-auth-title": "AEMサーバー401 (Unauthorized)エラー発生時",
+                "trouble-auth-desc": "Collector Appに入力したユーザー名とパスワードが正しいか、該当アカウントがAEMサーバーにアクセスする権限があるか確認してください。",
+                "trouble-db-title": "データベース接続失敗時",
+                "trouble-db-desc": "MongoDBとChromaDBサーバーが正常に実行中か確認し、`src/config.py`ファイルの接続情報が正しいか確認してください。`src/scripts/test_mongo_connection.py`スクリプトで接続をテストできます。",
+                "copy-btn": "コピー",
+                "copy-success": "コピーしました！"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function updateContent(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            currentLang = lang;
+        }
+
+        function updateLanguageButtons(activeLang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === activeLang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Language switching functionality
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    updateContent(lang);
+                    updateLanguageButtons(lang);
+                });
+            });
+
+            // Copy button functionality
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const codeElement = document.getElementById(targetId);
+                    if (codeElement) {
+                        const textToCopy = codeElement.innerText;
+                        const tempTextArea = document.createElement('textarea');
+                        tempTextArea.value = textToCopy;
+                        document.body.appendChild(tempTextArea);
+                        tempTextArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempTextArea);
+                        
+                        const successText = translations[currentLang]['copy-success'] || '복사됨!';
+                        const originalText = translations[currentLang]['copy-btn'] || '복사';
+                        button.textContent = successText;
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                        }, 2000);
+                    }
+                });
+            });
+
+            // Checklist and progress bar functionality
+            const checkboxes = document.querySelectorAll('.setup-checkbox');
+            const progressBar = document.getElementById('progress-bar');
+            const totalCheckboxes = checkboxes.length;
+
+            function updateProgress() {
+                const checkedCount = document.querySelectorAll('.setup-checkbox:checked').length;
+                const percentage = (checkedCount / totalCheckboxes) * 100;
+                progressBar.style.width = percentage + '%';
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+            
+            updateProgress();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEM QA System - Complete Workflow Detailed Diagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .flow-block {
+            position: relative;
+            transition: all 0.2s ease-in-out;
+        }
+        .flow-block:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .arrow {
+            width: 2px;
+            background-color: #cbd5e1;
+            position: relative;
+        }
+        .arrow::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -1px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #cbd5e1;
+        }
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .lang-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .lang-btn.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .lang-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900" data-i18n="main-title">AEM QA System 전체 플로우 차트</h1>
+                <!-- Language Selector -->
+                <div class="flex space-x-1 bg-slate-100 rounded-lg p-1">
+                    <button class="lang-btn active px-3 py-1 rounded text-sm font-medium" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="en">🇺🇸 English</button>
+                    <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="ja">🇯🇵 日本語</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-slate-900" data-i18n="intro-title">AEM QA System 전체 플로우 차트</h2>
+            <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto" data-i18n="intro-desc">
+                데이터 수집부터 분석까지, 시스템을 구성하는 모든 컴포넌트의 상세한 상호작용을 보여주는 워크플로우입니다. 각 블록에 마우스를 올리면 상세 설명을 볼 수 있습니다.
+            </p>
+        </div>
+
+        <section id="directory-structure" class="mb-16">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6 text-center" data-i18n="directory-title">프로젝트 디렉터리 구조</h2>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 font-mono text-sm text-slate-600">
+                <ul class="space-y-2">
+                    <li>📁 aem-qa-system/</li>
+                    <li class="pl-4">
+                        <ul class="space-y-2 border-l border-slate-200 pl-4">
+                            <li><span>📄 app.py</span></li>
+                            <li><span>📄 Home.py</span></li>
+                            <li><span data-i18n="src-folder">📁 src/</span>
+                                <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                    <li><span data-i18n="analyzers-folder">📁 analyzers/</span>
+                                        <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2"><li><span>📄 page_structure_analyzer.py</span></li></ul>
+                                    </li>
+                                    <li><span data-i18n="collectors-folder">📁 collectors/</span>
+                                        <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                            <li><span>📄 aem_collector.py</span></li>
+                                            <li><span>📄 pdf_collector.py</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span data-i18n="indexing-folder">📁 indexing/</span>
+                                        <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2"><li><span>📄 chroma_indexer.py</span></li></ul>
+                                    </li>
+                                    <li><span data-i18n="processors-folder">📁 processors/</span>
+                                         <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                            <li><span>📄 aem_tm_builder.py</span></li>
+                                            <li><span>📄 data_ingestor.py</span></li>
+                                            <li><span>📄 linguistic_asset_processor.py</span></li>
+                                            <li><span>📄 semantic_segmenter.py</span></li>
+                                            <li><span>📄 tm_cleaner.py</span></li>
+                                            <li><span>📄 tmx_processor.py</span></li>
+                                            <li><span>📄 utlimate_tm_builder.py</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span data-i18n="scripts-folder">📁 scripts/</span>
+                                        <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                            <li><span>📄 ingest_base_tm.py</span></li>
+                                            <li><span>📄 setup_collections.py</span></li>
+                                            <li><span>📄 test_mongo_connection.py</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span data-i18n="utils-folder">📁 utils/</span>
+                                        <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                            <li><span>📄 batch_utils.py</span></li>
+                                            <li><span>📄 collections_manager.py</span></li>
+                                            <li><span>📄 excel_processor.py</span></li>
+                                            <li><span>📄 mappings.py</span></li>
+                                            <li><span>📄 package_utils.py</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span>📄 config.py</span></li>
+                                    <li><span>📄 data_models.py</span></li>
+                                </ul>
+                            </li>
+                             <li><span data-i18n="streamlit-folder">📁 streamlit_app/</span>
+                                <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                    <li><span data-i18n="modules-folder">📁 modules/</span>
+                                        <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                            <li><span>📄 analyzer.py</span></li>
+                                            <li><span>📄 connections.py</span></li>
+                                            <li><span>📄 database_stats.py</span></li>
+                                            <li><span>📄 report_generator.py</span></li>
+                                            <li><span>📄 search_ui.py</span></li>
+                                            <li><span>📄 searcher.py</span></li>
+                                            <li><span>📄 ui_components.py</span></li>
+                                            <li><span>📄 utils.py</span></li>
+                                            <li><span>📄 version_manager.py</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span data-i18n="views-folder">📁 views/</span>
+                                        <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                            <li><span>📄 admin_analysis.py</span></li>
+                                            <li><span>📄 admin_ingestion.py</span></li>
+                                            <li><span>📄 admin_monitoring.py</span></li>
+                                            <li><span>📄 admin_processing.py</span></li>
+                                            <li><span>📄 qa_dashboard.py</span></li>
+                                            <li><span>📄 qa_search.py</span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                             <li><span data-i18n="reports-folder">📁 reports/</span>
+                                <ul class="space-y-2 border-l border-slate-200 pl-4 pt-2">
+                                    <li><span>📄 report_template.html</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="flex flex-col items-center space-y-4">
+
+            <!-- Start -->
+            <div class="flow-block has-tooltip w-full md:w-3/4 bg-white p-4 rounded-xl shadow-md border-2 border-emerald-300">
+                <p class="text-center font-bold text-emerald-800" data-i18n="start-user">START: 👤 사용자 (Admin)</p>
+                <div class="tooltip absolute bottom-full mb-2 w-full left-1/2 -translate-x-1/2 p-2 text-xs bg-slate-800 text-white rounded-md shadow-lg z-10 text-center" data-i18n="start-tooltip">
+                    관리자가 데이터 수집을 시작합니다.
+                </div>
+            </div>
+            <div class="arrow h-8"></div>
+
+            <!-- Block 1: Data Collection -->
+            <div class="flow-block has-tooltip w-full md:w-3/4 bg-white p-6 rounded-xl shadow-lg border-2 border-sky-300">
+                <h3 class="font-bold text-lg text-sky-800 mb-4 text-center" data-i18n="block1-title">블록 1: 데이터 수집 (Collector App)</h3>
+                <div class="space-y-4">
+                    <div class="p-3 bg-sky-50 rounded-md border border-sky-200">
+                        <p class="font-semibold">📄 app.py (UI)</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="app-py-desc">- Streamlit UI로 사용자 입력 처리</p>
+                    </div>
+                    <div class="p-3 bg-sky-50 rounded-md border border-sky-200">
+                        <p class="font-semibold">📄 collection_pipeline.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="pipeline-func1">- 🔧 <span class="font-mono">run_aem_collection()</span>: 데이터 수집 오케스트레이션</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="pipeline-func2">- 🔧 <span class="font-mono">create_final_package()</span>: 최종 패키지 생성</p>
+                    </div>
+                     <div class="p-3 bg-sky-50 rounded-md border border-sky-200">
+                        <p class="font-semibold">📄 aem_collector.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="collector-class">- 📦 <span class="font-mono">AEMCollector</span>: AEM 서버와 통신</p>
+                        <p class="text-xs text-slate-500 pl-8" data-i18n="collector-func">- 🔧 <span class="font-mono">collect_snapshots_for_batch()</span>: 병렬 다운로드 실행</p>
+                    </div>
+                    <div class="p-3 bg-sky-50 rounded-md border border-sky-200">
+                        <p class="font-semibold">📄 package_builder.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="package-func">- 🔧 <span class="font-mono">create_package()</span>: `FileInfo` 객체를 `.zip`으로 압축</p>
+                    </div>
+                </div>
+                <div class="tooltip absolute bottom-full mb-2 w-full left-1/2 -translate-x-1/2 p-2 text-xs bg-slate-800 text-white rounded-md shadow-lg z-10 text-center" data-i18n="block1-tooltip">
+                    AEM 서버에서 원본 데이터를 수집하고 `.zip` 패키지를 생성합니다.
+                </div>
+            </div>
+            <div class="arrow h-8"></div>
+
+            <!-- Block 2: Data Ingestion -->
+            <div class="flow-block has-tooltip w-full md:w-3/4 bg-white p-6 rounded-xl shadow-lg border-2 border-indigo-300">
+                <h3 class="font-bold text-lg text-indigo-800 mb-4 text-center" data-i18n="block2-title">블록 2: 데이터 적재</h3>
+                 <div class="space-y-4">
+                    <div class="p-3 bg-indigo-50 rounded-md border border-indigo-200">
+                        <p class="font-semibold">📄 admin_ingestion.py (UI)</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="ingestion-desc">- 관리자가 `.zip` 패키지를 업로드</p>
+                    </div>
+                    <div class="p-3 bg-indigo-50 rounded-md border border-indigo-200">
+                        <p class="font-semibold">📄 data_ingestor.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="ingestor-class">- 📦 <span class="font-mono">DataIngestor</span></p>
+                        <p class="text-xs text-slate-500 pl-8" data-i18n="ingestor-func1">- 🔧 <span class="font-mono">ingest_package()</span>: 패키지를 읽고 컴포넌트 분해</p>
+                        <p class="text-xs text-slate-500 pl-8" data-i18n="ingestor-func2">- 🔧 <span class="font-mono">_deconstruct_snapshot()</span>: 해시 계산 및 저장</p>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-md border border-emerald-200 text-center">
+                        <p class="font-semibold text-emerald-800" data-i18n="output-mongo">➡️ 산출물 (MongoDB)</p>
+                        <p class="font-mono text-sm text-emerald-700">page_components</p>
+                    </div>
+                </div>
+                <div class="tooltip absolute bottom-full mb-2 w-full left-1/2 -translate-x-1/2 p-2 text-xs bg-slate-800 text-white rounded-md shadow-lg z-10 text-center" data-i18n="block2-tooltip">
+                    수집된 데이터를 원본 그대로 MongoDB에 저장하여 모든 분석의 기초를 마련합니다.
+                </div>
+            </div>
+            <div class="arrow h-8"></div>
+
+            <!-- Block 3: TM Processing -->
+            <div class="flow-block has-tooltip w-full md:w-3/4 bg-white p-6 rounded-xl shadow-lg border-2 border-indigo-300">
+                <h3 class="font-bold text-lg text-indigo-800 mb-4 text-center" data-i18n="block3-title">블록 3: TM 구축 및 인덱싱</h3>
+                <div class="space-y-4">
+                    <div class="p-3 bg-indigo-50 rounded-md border border-indigo-200">
+                        <p class="font-semibold">📄 admin_processing.py (UI)</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="processing-desc">- 관리자가 TM 처리 파이프라인 시작</p>
+                    </div>
+                    <div class="p-3 bg-indigo-50 rounded-md border border-indigo-200">
+                        <p class="font-semibold">📄 utlimate_tm_builder.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="tm-builder-class">- 📦 <span class="font-mono">UltimateTMBuilder</span>: HTML 분리 및 의미 분할 오케스트레이션</p>
+                    </div>
+                    <div class="p-3 bg-indigo-50 rounded-md border border-indigo-200">
+                        <p class="font-semibold">📄 semantic_segmenter.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="segmenter-class">- 📦 <span class="font-mono">SemanticSegmenter</span>: AI 기반 텍스트 분할</p>
+                    </div>
+                    <div class="p-3 bg-indigo-50 rounded-md border border-indigo-200">
+                        <p class="font-semibold">📄 chroma_indexer.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="indexer-class">- 📦 <span class="font-mono">ChromaIndexer</span>: 정제된 텍스트를 벡터로 변환</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-3 bg-emerald-50 rounded-md border border-emerald-200 text-center">
+                            <p class="font-semibold text-emerald-800" data-i18n="output-mongo-tm">➡️ 산출물 (MongoDB)</p>
+                            <p class="font-mono text-xs text-emerald-700">clean_translation_memory, html_component_archive, untranslated_components</p>
+                        </div>
+                        <div class="p-3 bg-purple-50 rounded-md border border-purple-200 text-center">
+                            <p class="font-semibold text-purple-800" data-i18n="output-chroma">➡️ 산출물 (ChromaDB)</p>
+                            <p class="font-mono text-xs text-purple-700">tm_{lang_suffix}, glossaries_{lang_suffix}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tooltip absolute bottom-full mb-2 w-full left-1/2 -translate-x-1/2 p-2 text-xs bg-slate-800 text-white rounded-md shadow-lg z-10 text-center" data-i18n="block3-tooltip">
+                    원본 데이터를 가공하여 순수 TM을 만들고, AI 검색을 위해 벡터 데이터베이스에 저장합니다.
+                </div>
+            </div>
+            <div class="arrow h-8"></div>
+
+            <!-- Block 4: QA Analysis -->
+            <div class="flow-block has-tooltip w-full md:w-3/4 bg-white p-6 rounded-xl shadow-lg border-2 border-orange-300">
+                <h3 class="font-bold text-lg text-orange-800 mb-4 text-center" data-i18n="block4-title">블록 4: QA 분석 및 검색</h3>
+                <div class="space-y-4">
+                    <div class="p-3 bg-orange-50 rounded-md border border-orange-200">
+                        <p class="font-semibold" data-i18n="qa-ui">📄 qa_dashboard.py & qa_search.py (UI)</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="qa-ui-desc">- QA 분석가가 분석 및 검색 기능 사용</p>
+                    </div>
+                    <div class="p-3 bg-orange-50 rounded-md border border-orange-200">
+                        <p class="font-semibold">📄 analyzer.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="analyzer-class">- 📦 <span class="font-mono">PageAnalyzer</span>: MongoDB의 `page_components`를 버전별로 비교</p>
+                    </div>
+                    <div class="p-3 bg-orange-50 rounded-md border border-orange-200">
+                        <p class="font-semibold">📄 searcher.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="searcher-class">- 📦 <span class="font-mono">TranslationSearcher</span>: ChromaDB에서 의미 기반 검색 수행</p>
+                    </div>
+                    <div class="p-3 bg-orange-50 rounded-md border border-orange-200">
+                        <p class="font-semibold">📄 connections.py</p>
+                        <p class="text-sm text-slate-600 pl-4" data-i18n="connections-func">- 🔧 <span class="font-mono">get_mongo_client()</span>, <span class="font-mono">get_chroma_client()</span>: DB 연결 제공</p>
+                    </div>
+                </div>
+                <div class="tooltip absolute bottom-full mb-2 w-full left-1/2 -translate-x-1/2 p-2 text-xs bg-slate-800 text-white rounded-md shadow-lg z-10 text-center" data-i18n="block4-tooltip">
+                    가공된 데이터를 활용하여 버전 간 차이를 분석하고, AI 기반 검색으로 번역 품질을 검수합니다.
+                </div>
+            </div>
+             <div class="arrow h-8"></div>
+             <!-- End -->
+            <div class="flow-block has-tooltip w-full md:w-3/4 bg-white p-4 rounded-xl shadow-md border-2 border-emerald-300">
+                <p class="text-center font-bold text-emerald-800" data-i18n="end-result">END: 📊 분석 리포트 및 검색 결과</p>
+                 <div class="tooltip absolute bottom-full mb-2 w-full left-1/2 -translate-x-1/2 p-2 text-xs bg-slate-800 text-white rounded-md shadow-lg z-10 text-center" data-i18n="end-tooltip">
+                    사용자는 최종 분석 결과를 대시보드에서 확인하거나 리포트로 다운로드합니다.
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Translation dictionary
+        const translations = {
+            ko: {
+                "main-title": "AEM QA System 전체 플로우 차트",
+                "intro-title": "AEM QA System 전체 플로우 차트",
+                "intro-desc": "데이터 수집부터 분석까지, 시스템을 구성하는 모든 컴포넌트의 상세한 상호작용을 보여주는 워크플로우입니다. 각 블록에 마우스를 올리면 상세 설명을 볼 수 있습니다.",
+                "directory-title": "프로젝트 디렉터리 구조",
+                "src-folder": "📁 src/",
+                "analyzers-folder": "📁 analyzers/",
+                "collectors-folder": "📁 collectors/",
+                "indexing-folder": "📁 indexing/",
+                "processors-folder": "📁 processors/",
+                "scripts-folder": "📁 scripts/",
+                "utils-folder": "📁 utils/",
+                "streamlit-folder": "📁 streamlit_app/",
+                "modules-folder": "📁 modules/",
+                "views-folder": "📁 views/",
+                "reports-folder": "📁 reports/",
+                "start-user": "START: 👤 사용자 (Admin)",
+                "start-tooltip": "관리자가 데이터 수집을 시작합니다.",
+                "block1-title": "블록 1: 데이터 수집 (Collector App)",
+                "app-py-desc": "- Streamlit UI로 사용자 입력 처리",
+                "pipeline-func1": "- 🔧 run_aem_collection(): 데이터 수집 오케스트레이션",
+                "pipeline-func2": "- 🔧 create_final_package(): 최종 패키지 생성",
+                "collector-class": "- 📦 AEMCollector: AEM 서버와 통신",
+                "collector-func": "- 🔧 collect_snapshots_for_batch(): 병렬 다운로드 실행",
+                "package-func": "- 🔧 create_package(): `FileInfo` 객체를 `.zip`으로 압축",
+                "block1-tooltip": "AEM 서버에서 원본 데이터를 수집하고 `.zip` 패키지를 생성합니다.",
+                "block2-title": "블록 2: 데이터 적재",
+                "ingestion-desc": "- 관리자가 `.zip` 패키지를 업로드",
+                "ingestor-class": "- 📦 DataIngestor",
+                "ingestor-func1": "- 🔧 ingest_package(): 패키지를 읽고 컴포넌트 분해",
+                "ingestor-func2": "- 🔧 _deconstruct_snapshot(): 해시 계산 및 저장",
+                "output-mongo": "➡️ 산출물 (MongoDB)",
+                "block2-tooltip": "수집된 데이터를 원본 그대로 MongoDB에 저장하여 모든 분석의 기초를 마련합니다.",
+                "block3-title": "블록 3: TM 구축 및 인덱싱",
+                "processing-desc": "- 관리자가 TM 처리 파이프라인 시작",
+                "tm-builder-class": "- 📦 UltimateTMBuilder: HTML 분리 및 의미 분할 오케스트레이션",
+                "segmenter-class": "- 📦 SemanticSegmenter: AI 기반 텍스트 분할",
+                "indexer-class": "- 📦 ChromaIndexer: 정제된 텍스트를 벡터로 변환",
+                "output-mongo-tm": "➡️ 산출물 (MongoDB)",
+                "output-chroma": "➡️ 산출물 (ChromaDB)",
+                "block3-tooltip": "원본 데이터를 가공하여 순수 TM을 만들고, AI 검색을 위해 벡터 데이터베이스에 저장합니다.",
+                "block4-title": "블록 4: QA 분석 및 검색",
+                "qa-ui": "📄 qa_dashboard.py & qa_search.py (UI)",
+                "qa-ui-desc": "- QA 분석가가 분석 및 검색 기능 사용",
+                "analyzer-class": "- 📦 PageAnalyzer: MongoDB의 `page_components`를 버전별로 비교",
+                "searcher-class": "- 📦 TranslationSearcher: ChromaDB에서 의미 기반 검색 수행",
+                "connections-func": "- 🔧 get_mongo_client(), get_chroma_client(): DB 연결 제공",
+                "block4-tooltip": "가공된 데이터를 활용하여 버전 간 차이를 분석하고, AI 기반 검색으로 번역 품질을 검수합니다.",
+                "end-result": "END: 📊 분석 리포트 및 검색 결과",
+                "end-tooltip": "사용자는 최종 분석 결과를 대시보드에서 확인하거나 리포트로 다운로드합니다."
+            },
+            en: {
+                "main-title": "AEM QA System Complete Flow Chart",
+                "intro-title": "AEM QA System Complete Flow Chart",
+                "intro-desc": "A workflow showing detailed interactions of all components that make up the system, from data collection to analysis. Hover over each block to see detailed descriptions.",
+                "directory-title": "Project Directory Structure",
+                "src-folder": "📁 src/",
+                "analyzers-folder": "📁 analyzers/",
+                "collectors-folder": "📁 collectors/",
+                "indexing-folder": "📁 indexing/",
+                "processors-folder": "📁 processors/",
+                "scripts-folder": "📁 scripts/",
+                "utils-folder": "📁 utils/",
+                "streamlit-folder": "📁 streamlit_app/",
+                "modules-folder": "📁 modules/",
+                "views-folder": "📁 views/",
+                "reports-folder": "📁 reports/",
+                "start-user": "START: 👤 User (Admin)",
+                "start-tooltip": "Administrator starts data collection.",
+                "block1-title": "Block 1: Data Collection (Collector App)",
+                "app-py-desc": "- User input processing with Streamlit UI",
+                "pipeline-func1": "- 🔧 run_aem_collection(): Data collection orchestration",
+                "pipeline-func2": "- 🔧 create_final_package(): Final package creation",
+                "collector-class": "- 📦 AEMCollector: Communication with AEM server",
+                "collector-func": "- 🔧 collect_snapshots_for_batch(): Parallel download execution",
+                "package-func": "- 🔧 create_package(): Compress `FileInfo` objects to `.zip`",
+                "block1-tooltip": "Collect raw data from AEM server and create `.zip` package.",
+                "block2-title": "Block 2: Data Ingestion",
+                "ingestion-desc": "- Administrator uploads `.zip` package",
+                "ingestor-class": "- 📦 DataIngestor",
+                "ingestor-func1": "- 🔧 ingest_package(): Read package and decompose components",
+                "ingestor-func2": "- 🔧 _deconstruct_snapshot(): Calculate hash and store",
+                "output-mongo": "➡️ Output (MongoDB)",
+                "block2-tooltip": "Store collected data as-is in MongoDB to establish the foundation for all analysis.",
+                "block3-title": "Block 3: TM Building & Indexing",
+                "processing-desc": "- Administrator starts TM processing pipeline",
+                "tm-builder-class": "- 📦 UltimateTMBuilder: HTML separation and semantic segmentation orchestration",
+                "segmenter-class": "- 📦 SemanticSegmenter: AI-based text segmentation",
+                "indexer-class": "- 📦 ChromaIndexer: Convert refined text to vectors",
+                "output-mongo-tm": "➡️ Output (MongoDB)",
+                "output-chroma": "➡️ Output (ChromaDB)",
+                "block3-tooltip": "Process raw data to create pure TM and store in vector database for AI search.",
+                "block4-title": "Block 4: QA Analysis & Search",
+                "qa-ui": "📄 qa_dashboard.py & qa_search.py (UI)",
+                "qa-ui-desc": "- QA analysts use analysis and search functions",
+                "analyzer-class": "- 📦 PageAnalyzer: Compare `page_components` in MongoDB by version",
+                "searcher-class": "- 📦 TranslationSearcher: Perform semantic search in ChromaDB",
+                "connections-func": "- 🔧 get_mongo_client(), get_chroma_client(): Provide DB connections",
+                "block4-tooltip": "Analyze version differences using processed data and review translation quality with AI-based search.",
+                "end-result": "END: 📊 Analysis Reports & Search Results",
+                "end-tooltip": "Users view final analysis results in dashboard or download as reports."
+            },
+            ja: {
+                "main-title": "AEM QAシステム 全体フローチャート",
+                "intro-title": "AEM QAシステム 全体フローチャート",
+                "intro-desc": "データ収集から分析まで、システムを構成するすべてのコンポーネントの詳細な相互作用を示すワークフローです。各ブロックにマウスを置くと詳細説明が表示されます。",
+                "directory-title": "プロジェクトディレクトリ構造",
+                "src-folder": "📁 src/",
+                "analyzers-folder": "📁 analyzers/",
+                "collectors-folder": "📁 collectors/",
+                "indexing-folder": "📁 indexing/",
+                "processors-folder": "📁 processors/",
+                "scripts-folder": "📁 scripts/",
+                "utils-folder": "📁 utils/",
+                "streamlit-folder": "📁 streamlit_app/",
+                "modules-folder": "📁 modules/",
+                "views-folder": "📁 views/",
+                "reports-folder": "📁 reports/",
+                "start-user": "START: 👤 ユーザー (Admin)",
+                "start-tooltip": "管理者がデータ収集を開始します。",
+                "block1-title": "ブロック1: データ収集 (Collector App)",
+                "app-py-desc": "- Streamlit UIでユーザー入力処理",
+                "pipeline-func1": "- 🔧 run_aem_collection(): データ収集オーケストレーション",
+                "pipeline-func2": "- 🔧 create_final_package(): 最終パッケージ作成",
+                "collector-class": "- 📦 AEMCollector: AEMサーバーとの通信",
+                "collector-func": "- 🔧 collect_snapshots_for_batch(): 並列ダウンロード実行",
+                "package-func": "- 🔧 create_package(): `FileInfo`オブジェクトを`.zip`に圧縮",
+                "block1-tooltip": "AEMサーバーから元データを収集し`.zip`パッケージを作成します。",
+                "block2-title": "ブロック2: データ格納",
+                "ingestion-desc": "- 管理者が`.zip`パッケージをアップロード",
+                "ingestor-class": "- 📦 DataIngestor",
+                "ingestor-func1": "- 🔧 ingest_package(): パッケージを読み込みコンポーネント分解",
+                "ingestor-func2": "- 🔧 _deconstruct_snapshot(): ハッシュ計算・保存",
+                "output-mongo": "➡️ 出力 (MongoDB)",
+                "block2-tooltip": "収集されたデータをそのままMongoDBに保存し、すべての分析の基盤を準備します。",
+                "block3-title": "ブロック3: TM構築・インデックス化",
+                "processing-desc": "- 管理者がTM処理パイプラインを開始",
+                "tm-builder-class": "- 📦 UltimateTMBuilder: HTML分離・意味分割オーケストレーション",
+                "segmenter-class": "- 📦 SemanticSegmenter: AI基盤テキスト分割",
+                "indexer-class": "- 📦 ChromaIndexer: 精製されたテキストをベクターに変換",
+                "output-mongo-tm": "➡️ 出力 (MongoDB)",
+                "output-chroma": "➡️ 出力 (ChromaDB)",
+                "block3-tooltip": "元データを加工して純粋なTMを作成し、AI検索用にベクターデータベースに保存します。",
+                "block4-title": "ブロック4: QA分析・検索",
+                "qa-ui": "📄 qa_dashboard.py & qa_search.py (UI)",
+                "qa-ui-desc": "- QA分析者が分析・検索機能を使用",
+                "analyzer-class": "- 📦 PageAnalyzer: MongoDBの`page_components`をバージョン別比較",
+                "searcher-class": "- 📦 TranslationSearcher: ChromaDBで意味ベース検索実行",
+                "connections-func": "- 🔧 get_mongo_client(), get_chroma_client(): DB接続提供",
+                "block4-tooltip": "加工されたデータを活用してバージョン間差異を分析し、AIベース検索で翻訳品質を検査します。",
+                "end-result": "END: 📊 分析レポート・検索結果",
+                "end-tooltip": "ユーザーは最終分析結果をダッシュボードで確認またはレポートとしてダウンロードします。"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function updateContent(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    // Handle elements with code formatting
+                    const text = translations[lang][key];
+                    if (text.includes('`') || text.includes('<span class="font-mono">')) {
+                        element.innerHTML = text;
+                    } else {
+                        element.textContent = text;
+                    }
+                }
+            });
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            currentLang = lang;
+        }
+
+        function updateLanguageButtons(activeLang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === activeLang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Language switching functionality
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    updateContent(lang);
+                    updateLanguageButtons(lang);
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+                "

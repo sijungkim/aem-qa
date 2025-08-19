@@ -38,6 +38,7 @@ env/
 logs/
 reports/
 .obsidian/
+reference_for_self/
 
 # --- 데이터 폴더 ---
 data-1/

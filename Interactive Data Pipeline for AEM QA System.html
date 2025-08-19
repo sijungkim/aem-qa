@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: AEM QA System 데이터 파이프라인</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .step-card, .collection-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #475569;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+        .lang-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .lang-btn.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .lang-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900" data-i18n="main-title">AEM QA System 데이터 파이프라인</h1>
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <div class="flex space-x-1 bg-slate-100 rounded-lg p-1">
+                        <button class="lang-btn active px-3 py-1 rounded text-sm font-medium" data-lang="ko">🇰🇷 한국어</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="en">🇺🇸 English</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="ja">🇯🇵 日本語</button>
+                    </div>
+                    <nav class="hidden md:flex md:space-x-8">
+                        <a href="#overview" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-overview">개요</a>
+                        <a href="#pipeline-steps" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-details">상세 단계</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <section id="overview" class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-slate-900 mb-4" data-i18n="pipeline-title">데이터 파이프라인 상세 명세서</h2>
+            <p class="text-lg text-slate-600 max-w-4xl mx-auto" data-i18n="pipeline-desc">
+                AEM QA System의 데이터 수집부터 최종 데이터베이스 생성까지의 전 과정을 안내합니다. 아래 플로우차트의 각 단계를 클릭하면 해당 상세 설명으로 이동합니다.
+            </p>
+            <div class="mt-10 p-6 bg-white rounded-xl shadow-lg border border-slate-200">
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <a href="#step1" class="step-card bg-sky-50 border-2 border-sky-200 p-3 rounded-lg text-center cursor-pointer w-full md:w-auto">
+                        <h3 class="font-semibold text-sky-800" data-i18n="step1-title">STEP 1: 데이터 수집</h3>
+                        <p class="text-sm text-sky-600" data-i18n="step1-module">Collector App</p>
+                    </a>
+                    <div class="text-2xl text-slate-400 font-light transform md:rotate-0 rotate-90">→</div>
+                    <a href="#step2" class="step-card bg-sky-50 border-2 border-sky-200 p-3 rounded-lg text-center cursor-pointer w-full md:w-auto">
+                        <h3 class="font-semibold text-sky-800" data-i18n="step2-title">STEP 2: 원본 데이터 적재</h3>
+                        <p class="text-sm text-sky-600" data-i18n="step2-module">Data Ingestor</p>
+                    </a>
+                    <div class="text-2xl text-slate-400 font-light transform md:rotate-0 rotate-90">→</div>
+                    <a href="#step3" class="step-card bg-sky-50 border-2 border-sky-200 p-3 rounded-lg text-center cursor-pointer w-full md:w-auto">
+                        <h3 class="font-semibold text-sky-800" data-i18n="step3-title">STEP 3: TM 구축 및 분리</h3>
+                        <p class="text-sm text-sky-600" data-i18n="step3-module">Ultimate TM Builder</p>
+                    </a>
+                    <div class="text-2xl text-slate-400 font-light transform md:rotate-0 rotate-90">→</div>
+                    <a href="#step4" class="step-card bg-sky-50 border-2 border-sky-200 p-3 rounded-lg text-center cursor-pointer w-full md:w-auto">
+                        <h3 class="font-semibold text-sky-800" data-i18n="step4-title">STEP 4: 벡터 인덱싱</h3>
+                        <p class="text-sm text-sky-600" data-i18n="step4-module">Chroma Indexer</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-16">
+
+        <section id="pipeline-steps">
+            <h2 class="text-3xl font-bold text-slate-900 mb-8 text-center" data-i18n="detailed-steps">단계별 상세 설명</h2>
+            <div class="space-y-12">
+
+                <!-- STEP 1 -->
+                <article id="step1" class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold mb-4"><span class="text-sky-500">STEP 1:</span> <span data-i18n="step1-full-title">데이터 수집 (Data Collection)</span></h3>
+                    <p class="mb-6 text-slate-600" data-i18n="step1-desc">AEM 서버에서 분석에 필요한 원본 콘텐츠 (JSON 스냅샷)를 수집하여 단일 패키지(`.zip`)로 만듭니다.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="execution-module">실행 모듈</h4>
+                            <p class="text-slate-500">Collector App (`app.py`, `aem_collector.py`)</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="core-tech">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">Streamlit</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">Python requests</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">ThreadPoolExecutor</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">zipfile</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="output">산출물</h4>
+                            <p class="text-slate-500" data-i18n="step1-output">콘텐츠 패키지 (`.zip`)</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- STEP 2 -->
+                <article id="step2" class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold mb-4"><span class="text-sky-500">STEP 2:</span> <span data-i18n="step2-full-title">원본 데이터 적재 (Raw Data Ingestion)</span></h3>
+                    <p class="mb-6 text-slate-600" data-i18n="step2-desc">수집된 콘텐츠 패키지를 시스템의 기본 데이터베이스에 원본 그대로 저장하여 모든 분석의 기초를 마련합니다.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="execution-module">실행 모듈</h4>
+                            <p class="text-slate-500">Data Ingestor (`data_ingestor.py`)</p>
+                            <h4 class="font-semibold text-lg mb-2 mt-4" data-i18n="core-tech">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">Python hashlib (SHA256)</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">PyMongo</span>
+                            </div>
+                        </div>
+                        <div class="collection-card bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="created-collections">생성되는 MongoDB 컬렉션</h4>
+                            <div class="code-block mb-2">
+                                <pre class="bg-slate-200 text-slate-700 p-2 rounded text-sm font-mono"><code id="code-coll1">page_components</code></pre>
+                                <button class="copy-btn" data-target="code-coll1" data-i18n="copy-btn">복사</button>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700" data-i18n="purpose">의도:</p>
+                            <p class="text-sm text-slate-600" data-i18n="step2-purpose">AEM 컴포넌트의 변경 이력을 포함한 원본 저장소(Raw Data Repository)입니다. 모든 분석과 버전 비교의 근본적인 데이터 소스 역할을 합니다.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- STEP 3 -->
+                <article id="step3" class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold mb-4"><span class="text-sky-500">STEP 3:</span> <span data-i18n="step3-full-title">TM 구축 및 분리 (TM Building & Separation)</span></h3>
+                    <p class="mb-6 text-slate-600" data-i18n="step3-desc">`page_components`의 원본 데이터를 분석하여 번역 메모리(TM)로 활용할 수 있는 순수 텍스트와 그렇지 않은 데이터를 분리하고 정제합니다.</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="execution-module">실행 모듈</h4>
+                            <p class="text-slate-500">Ultimate TM Builder (`utlimate_tm_builder.py`)</p>
+                            <h4 class="font-semibold text-lg mb-2 mt-4" data-i18n="core-tech">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">Regex</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">spaCy</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">sentence-transformers</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">Dynamic Programming</span>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="collection-card bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h4 class="font-semibold text-lg mb-2" data-i18n="created-collections">생성되는 MongoDB 컬렉션</h4>
+                                <div class="space-y-2">
+                                    <div class="code-block">
+                                        <pre class="bg-slate-200 text-slate-700 p-2 rounded text-sm font-mono"><code id="code-coll2">untranslated_components_{lang_suffix}</code></pre>
+                                        <button class="copy-btn" data-target="code-coll2" data-i18n="copy-btn">복사</button>
+                                    </div>
+                                    <p class="text-sm text-slate-600"><span class="font-semibold text-slate-700" data-i18n="purpose">의도:</span> <span data-i18n="step3-untranslated">컴포넌트 구조 불일치로 자동 번역 쌍을 만들지 못한 컴포넌트 저장.</span></p>
+                                </div>
+                                <div class="space-y-2 mt-3">
+                                    <div class="code-block">
+                                        <pre class="bg-slate-200 text-slate-700 p-2 rounded text-sm font-mono"><code id="code-coll3">html_component_archive_{lang_suffix}</code></pre>
+                                        <button class="copy-btn" data-target="code-coll3" data-i18n="copy-btn">복사</button>
+                                    </div>
+                                    <p class="text-sm text-slate-600"><span class="font-semibold text-slate-700" data-i18n="purpose">의도:</span> <span data-i18n="step3-html">HTML 태그가 포함된 컴포넌트를 별도 보관하는 아카이브.</span></p>
+                                </div>
+                                <div class="space-y-2 mt-3">
+                                    <div class="code-block">
+                                        <pre class="bg-slate-200 text-slate-700 p-2 rounded text-sm font-mono"><code id="code-coll4">clean_translation_memory_{lang_suffix}</code></pre>
+                                        <button class="copy-btn" data-target="code-coll4" data-i18n="copy-btn">복사</button>
+                                    </div>
+                                    <p class="text-sm text-slate-600"><span class="font-semibold text-slate-700" data-i18n="purpose">의도:</span> <span data-i18n="step3-clean">최종 정제된 순수 텍스트 번역 쌍(TM)을 저장하는 핵심 컬렉션.</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- STEP 4 -->
+                <article id="step4" class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold mb-4"><span class="text-sky-500">STEP 4:</span> <span data-i18n="step4-full-title">벡터 인덱싱 (Vector Indexing)</span></h3>
+                    <p class="mb-6 text-slate-600" data-i18n="step4-desc">정제된 텍스트 TM을 AI가 초고속으로 의미를 검색할 수 있는 형태로 변환하여 벡터 데이터베이스에 저장합니다.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="execution-module">실행 모듈</h4>
+                            <p class="text-slate-500">Chroma Indexer (`chroma_indexer.py`)</p>
+                            <h4 class="font-semibold text-lg mb-2 mt-4" data-i18n="core-tech">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">sentence-transformers</span>
+                                <span class="bg-slate-100 text-slate-700 text-sm font-medium px-2.5 py-0.5 rounded-full">ChromaDB Client</span>
+                            </div>
+                        </div>
+                        <div class="collection-card bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-lg mb-2" data-i18n="created-chromadb">생성되는 ChromaDB 컬렉션</h4>
+                            <div class="code-block mb-2">
+                                <pre class="bg-slate-200 text-slate-700 p-2 rounded text-sm font-mono"><code id="code-coll5">tm_{lang_suffix} / glossaries_{lang_suffix}</code></pre>
+                                <button class="copy-btn" data-target="code-coll5" data-i18n="copy-btn">복사</button>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700" data-i18n="purpose">의도:</p>
+                            <p class="text-sm text-slate-600" data-i18n="step4-purpose">AI 의미 기반 검색을 위한 벡터 인덱스입니다. '고급 검색' 기능에서 입력 문장과 의미적으로 가장 유사한 번역 사례를 추천하는 데 사용됩니다.</p>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Translation dictionary
+        const translations = {
+            ko: {
+                "main-title": "AEM QA System 데이터 파이프라인",
+                "nav-overview": "개요",
+                "nav-details": "상세 단계",
+                "pipeline-title": "데이터 파이프라인 상세 명세서",
+                "pipeline-desc": "AEM QA System의 데이터 수집부터 최종 데이터베이스 생성까지의 전 과정을 안내합니다. 아래 플로우차트의 각 단계를 클릭하면 해당 상세 설명으로 이동합니다.",
+                "step1-title": "STEP 1: 데이터 수집",
+                "step1-module": "Collector App",
+                "step2-title": "STEP 2: 원본 데이터 적재",
+                "step2-module": "Data Ingestor",
+                "step3-title": "STEP 3: TM 구축 및 분리",
+                "step3-module": "Ultimate TM Builder",
+                "step4-title": "STEP 4: 벡터 인덱싱",
+                "step4-module": "Chroma Indexer",
+                "detailed-steps": "단계별 상세 설명",
+                "step1-full-title": "데이터 수집 (Data Collection)",
+                "step1-desc": "AEM 서버에서 분석에 필요한 원본 콘텐츠 (JSON 스냅샷)를 수집하여 단일 패키지(`.zip`)로 만듭니다.",
+                "execution-module": "실행 모듈",
+                "core-tech": "핵심 기술",
+                "output": "산출물",
+                "step1-output": "콘텐츠 패키지 (`.zip`)",
+                "step2-full-title": "원본 데이터 적재 (Raw Data Ingestion)",
+                "step2-desc": "수집된 콘텐츠 패키지를 시스템의 기본 데이터베이스에 원본 그대로 저장하여 모든 분석의 기초를 마련합니다.",
+                "created-collections": "생성되는 MongoDB 컬렉션",
+                "copy-btn": "복사",
+                "purpose": "의도:",
+                "step2-purpose": "AEM 컴포넌트의 변경 이력을 포함한 원본 저장소(Raw Data Repository)입니다. 모든 분석과 버전 비교의 근본적인 데이터 소스 역할을 합니다.",
+                "step3-full-title": "TM 구축 및 분리 (TM Building & Separation)",
+                "step3-desc": "`page_components`의 원본 데이터를 분석하여 번역 메모리(TM)로 활용할 수 있는 순수 텍스트와 그렇지 않은 데이터를 분리하고 정제합니다.",
+                "step3-untranslated": "컴포넌트 구조 불일치로 자동 번역 쌍을 만들지 못한 컴포넌트 저장.",
+                "step3-html": "HTML 태그가 포함된 컴포넌트를 별도 보관하는 아카이브.",
+                "step3-clean": "최종 정제된 순수 텍스트 번역 쌍(TM)을 저장하는 핵심 컬렉션.",
+                "step4-full-title": "벡터 인덱싱 (Vector Indexing)",
+                "step4-desc": "정제된 텍스트 TM을 AI가 초고속으로 의미를 검색할 수 있는 형태로 변환하여 벡터 데이터베이스에 저장합니다.",
+                "created-chromadb": "생성되는 ChromaDB 컬렉션",
+                "step4-purpose": "AI 의미 기반 검색을 위한 벡터 인덱스입니다. '고급 검색' 기능에서 입력 문장과 의미적으로 가장 유사한 번역 사례를 추천하는 데 사용됩니다."
+            },
+            en: {
+                "main-title": "AEM QA System Data Pipeline",
+                "nav-overview": "Overview",
+                "nav-details": "Detailed Steps",
+                "pipeline-title": "Data Pipeline Detailed Specification",
+                "pipeline-desc": "Guide through the entire process from AEM QA System data collection to final database creation. Click on each step in the flowchart below to navigate to the detailed explanation.",
+                "step1-title": "STEP 1: Data Collection",
+                "step1-module": "Collector App",
+                "step2-title": "STEP 2: Raw Data Ingestion",
+                "step2-module": "Data Ingestor",
+                "step3-title": "STEP 3: TM Building & Separation",
+                "step3-module": "Ultimate TM Builder",
+                "step4-title": "STEP 4: Vector Indexing",
+                "step4-module": "Chroma Indexer",
+                "detailed-steps": "Step-by-Step Detailed Explanation",
+                "step1-full-title": "Data Collection",
+                "step1-desc": "Collect original content (JSON snapshots) required for analysis from AEM server and create a single package (`.zip`).",
+                "execution-module": "Execution Module",
+                "core-tech": "Core Technologies",
+                "output": "Output",
+                "step1-output": "Content Package (`.zip`)",
+                "step2-full-title": "Raw Data Ingestion",
+                "step2-desc": "Store the collected content package as-is in the system's base database to establish the foundation for all analysis.",
+                "created-collections": "Created MongoDB Collections",
+                "copy-btn": "Copy",
+                "purpose": "Purpose:",
+                "step2-purpose": "Raw Data Repository including change history of AEM components. Serves as the fundamental data source for all analysis and version comparisons.",
+                "step3-full-title": "TM Building & Separation",
+                "step3-desc": "Analyze original data in `page_components` to separate and refine pure text that can be used as Translation Memory (TM) from other data.",
+                "step3-untranslated": "Storage for components that couldn't create automatic translation pairs due to component structure mismatches.",
+                "step3-html": "Archive for separately storing components containing HTML tags.",
+                "step3-clean": "Core collection storing final refined pure text translation pairs (TM).",
+                "step4-full-title": "Vector Indexing",
+                "step4-desc": "Convert refined text TM into a format that AI can search for meaning at ultra-high speed and store in vector database.",
+                "created-chromadb": "Created ChromaDB Collections",
+                "step4-purpose": "Vector index for AI semantic-based search. Used in 'Advanced Search' feature to recommend translation cases that are semantically most similar to input sentences."
+            },
+            ja: {
+                "main-title": "AEM QAシステム データパイプライン",
+                "nav-overview": "概要",
+                "nav-details": "詳細ステップ",
+                "pipeline-title": "データパイプライン詳細仕様書",
+                "pipeline-desc": "AEM QAシステムのデータ収集から最終データベース作成までの全プロセスをガイドします。下記フローチャートの各ステップをクリックすると、該当する詳細説明に移動します。",
+                "step1-title": "STEP 1: データ収集",
+                "step1-module": "Collector App",
+                "step2-title": "STEP 2: 生データ格納",
+                "step2-module": "Data Ingestor",
+                "step3-title": "STEP 3: TM構築・分離",
+                "step3-module": "Ultimate TM Builder",
+                "step4-title": "STEP 4: ベクトルインデックス化",
+                "step4-module": "Chroma Indexer",
+                "detailed-steps": "ステップ別詳細説明",
+                "step1-full-title": "データ収集",
+                "step1-desc": "AEMサーバーから分析に必要な原本コンテンツ（JSONスナップショット）を収集し、単一パッケージ（`.zip`）を作成します。",
+                "execution-module": "実行モジュール",
+                "core-tech": "コア技術",
+                "output": "出力",
+                "step1-output": "コンテンツパッケージ（`.zip`）",
+                "step2-full-title": "生データ格納",
+                "step2-desc": "収集されたコンテンツパッケージをシステムの基本データベースに原本のまま保存し、すべての分析の基盤を構築します。",
+                "created-collections": "作成されるMongoDBコレクション",
+                "copy-btn": "コピー",
+                "purpose": "目的：",
+                "step2-purpose": "AEMコンポーネントの変更履歴を含む原本リポジトリです。すべての分析とバージョン比較の根本的なデータソースの役割を果たします。",
+                "step3-full-title": "TM構築・分離",
+                "step3-desc": "`page_components`の原本データを分析し、翻訳メモリ（TM）として活用できる純粋テキストとそうでないデータを分離・精製します。",
+                "step3-untranslated": "コンポーネント構造の不一致により自動翻訳ペアを作成できなかったコンポーネントの保存。",
+                "step3-html": "HTMLタグが含まれるコンポーネントを別途保管するアーカイブ。",
+                "step3-clean": "最終精製された純粋テキスト翻訳ペア（TM）を保存するコアコレクション。",
+                "step4-full-title": "ベクトルインデックス化",
+                "step4-desc": "精製されたテキストTMをAIが超高速で意味検索できる形式に変換し、ベクトルデータベースに保存します。",
+                "created-chromadb": "作成されるChromaDBコレクション",
+                "step4-purpose": "AIセマンティック検索用のベクトルインデックスです。「高度検索」機能で入力文と意味的に最も類似した翻訳事例を推薦するために使用されます。"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function updateContent(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            currentLang = lang;
+        }
+
+        function updateLanguageButtons(activeLang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === activeLang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Language switching functionality
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    updateContent(lang);
+                    updateLanguageButtons(lang);
+                });
+            });
+
+            // Copy functionality for collection names
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const codeElement = document.getElementById(targetId);
+                    if (codeElement) {
+                        const textToCopy = codeElement.innerText;
+                        const tempTextArea = document.createElement('textarea');
+                        tempTextArea.value = textToCopy;
+                        document.body.appendChild(tempTextArea);
+                        tempTextArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempTextArea);
+                        
+                        const originalText = button.textContent;
+                        button.textContent = currentLang === 'ko' ? '복사됨!' : 
+                                           currentLang === 'en' ? 'Copied!' : 'コピー済み!';
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                        }, 2000);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Component Architecture: AEM QA System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .component-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .component-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .dimmed {
+            opacity: 0.3;
+            filter: grayscale(80%);
+        }
+        .highlight {
+            opacity: 1 !important;
+            filter: none !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        .arrow {
+            transition: color 0.3s ease-in-out;
+        }
+        .arrow.highlight {
+            color: #3b82f6;
+        }
+        .lang-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .lang-btn.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .lang-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900" data-i18n="main-title">AEM QA System 컴포넌트 아키텍처</h1>
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <div class="flex space-x-1 bg-slate-100 rounded-lg p-1">
+                        <button class="lang-btn active px-3 py-1 rounded text-sm font-medium" data-lang="ko">🇰🇷 한국어</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="en">🇺🇸 English</button>
+                        <button class="lang-btn px-3 py-1 rounded text-sm font-medium" data-lang="ja">🇯🇵 日本語</button>
+                    </div>
+                    <nav class="hidden md:flex md:space-x-6 text-sm md:text-base">
+                        <a href="#block1" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-config">설정</a>
+                        <a href="#block2" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-collection">데이터 수집</a>
+                        <a href="#block3" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-processing">데이터 처리</a>
+                        <a href="#block4" class="font-medium text-slate-600 hover:text-sky-600 transition-colors" data-i18n="nav-analysis">분석 및 검색</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-slate-900" data-i18n="intro-title">프로세스 블록별 아키텍처</h2>
+            <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto" data-i18n="intro-desc">
+                시스템을 구성하는 모든 소프트웨어 컴포넌트의 관계와 상호작용을 시각적으로 보여줍니다. <span class="font-semibold text-sky-600">각 컴포넌트 카드를 클릭</span>하면 관련된 요소들이 강조 표시됩니다.
+            </p>
+        </div>
+
+        <!-- Block 1: Configuration -->
+        <section id="block1" class="mb-16">
+            <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-200 pb-2 mb-6" data-i18n="block1-title">블록 1: 설정 및 공통 모듈</h3>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                <div id="config.py" class="component-card bg-white p-4 rounded-lg border-2 border-blue-300 shadow-md w-full md:w-1/3 cursor-pointer">
+                    <h4 class="font-bold text-lg">📄 config.py</h4>
+                    <div class="mt-2 border-t pt-2">
+                        <p class="font-semibold text-sm" data-i18n="config-constants">⚙️ 상수 (Constants)</p>
+                        <ul class="text-xs text-slate-500 list-none mt-1">
+                            <li>- MONGO_CONNECTION_STRING</li>
+                            <li>- DB_NAME, CHROMA_HOST</li>
+                            <li data-i18n="config-other">- (기타 모든 경로 및 설정)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-4xl text-slate-400 arrow" data-source="config.py" data-target="all">➡️</div>
+                <div class="component-card bg-slate-100 p-4 rounded-lg border-2 border-slate-300 shadow-md w-full md:w-1/3 text-center">
+                    <h4 class="font-bold text-lg" data-i18n="all-components">모든 시스템 컴포넌트</h4>
+                    <p class="text-sm text-slate-500">(All Other Blocks)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 2: Data Collection -->
+        <section id="block2" class="mb-16">
+            <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-200 pb-2 mb-6" data-i18n="block2-title">블록 2: 데이터 수집 프로세스</h3>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <h4 class="text-xl font-semibold text-center mb-6 text-emerald-700" data-i18n="collector-components">Collector App Components</h4>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                    <div id="app.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer">
+                        <h4 class="font-bold text-lg">📄 app.py (UI)</h4>
+                        <p class="text-sm text-slate-500 mt-1" data-i18n="app-py-desc">Streamlit UI 렌더링 및 사용자 입력 처리</p>
+                    </div>
+                    <div class="text-4xl text-slate-400 arrow" data-source="app.py" data-target="collection_pipeline.py">➡️</div>
+                    <div id="collection_pipeline.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer">
+                        <h4 class="font-bold text-lg">📄 collection_pipeline.py</h4>
+                        <p class="text-sm text-slate-500 mt-1" data-i18n="pipeline-desc">전체 수집 프로세스 조율</p>
+                    </div>
+                    <div class="text-4xl text-slate-400 arrow" data-source="collection_pipeline.py" data-target="aem_collector.py package_builder.py">➡️</div>
+                    <div class="flex flex-col gap-4">
+                        <div id="aem_collector.py" class="component-card bg-white p-4 rounded-lg border-2 border-indigo-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 aem_collector.py</h4>
+                            <p class="font-semibold text-sm mt-1">📦 AEMCollector</p>
+                        </div>
+                        <div id="package_builder.py" class="component-card bg-white p-4 rounded-lg border-2 border-indigo-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 package_builder.py</h4>
+                            <p class="font-semibold text-sm mt-1">🔧 create_package()</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 3: Data Processing -->
+        <section id="block3" class="mb-16">
+            <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-200 pb-2 mb-6" data-i18n="block3-title">블록 3: 데이터 처리 파이프라인</h3>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <h4 class="text-xl font-semibold text-center mb-6 text-indigo-700" data-i18n="admin-components">AEM QA System Components (Admin)</h4>
+                <div class="flex flex-col items-center gap-4">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div id="admin_ingestion.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer text-center">
+                            <h4 class="font-bold text-lg">📄 admin_ingestion.py</h4>
+                        </div>
+                        <div id="admin_processing.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer text-center">
+                            <h4 class="font-bold text-lg">📄 admin_processing.py</h4>
+                        </div>
+                        <div id="admin_analysis.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer text-center">
+                            <h4 class="font-bold text-lg">📄 admin_analysis.py</h4>
+                        </div>
+                        <div id="admin_monitoring.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer text-center">
+                            <h4 class="font-bold text-lg">📄 admin_monitoring.py</h4>
+                        </div>
+                    </div>
+                    <div class="text-4xl text-slate-400">⬇️</div>
+                    <div class="flex flex-col md:flex-row items-stretch justify-center gap-4 md:gap-8">
+                        <div id="data_ingestor.py" class="component-card bg-white p-4 rounded-lg border-2 border-indigo-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 data_ingestor.py</h4>
+                            <p class="font-semibold text-sm mt-1">📦 DataIngestor</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center text-4xl text-slate-400 arrow" data-source="admin_processing.py" data-target="utlimate_tm_builder.py">➡️</div>
+                        <div id="utlimate_tm_builder.py" class="component-card bg-white p-4 rounded-lg border-2 border-indigo-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 utlimate_tm_builder.py</h4>
+                            <p class="font-semibold text-sm mt-1">📦 UltimateTMBuilder</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center text-4xl text-slate-400 arrow" data-source="utlimate_tm_builder.py" data-target="chroma_indexer.py">➡️</div>
+                        <div id="chroma_indexer.py" class="component-card bg-white p-4 rounded-lg border-2 border-indigo-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 chroma_indexer.py</h4>
+                            <p class="font-semibold text-sm mt-1">📦 ChromaIndexer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 4: QA Analysis & Search -->
+        <section id="block4">
+            <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-200 pb-2 mb-6" data-i18n="block4-title">블록 4: QA 분석 및 검색</h3>
+             <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <h4 class="text-xl font-semibold text-center mb-6 text-orange-700" data-i18n="qa-components">AEM QA System Components (QA Workstation)</h4>
+                <div class="flex flex-col items-center gap-4">
+                    <div class="flex gap-4">
+                        <div id="qa_dashboard.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 qa_dashboard.py</h4>
+                        </div>
+                        <div id="qa_search.py" class="component-card bg-white p-4 rounded-lg border-2 border-emerald-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 qa_search.py</h4>
+                        </div>
+                    </div>
+                    <div class="text-4xl text-slate-400">⬇️</div>
+                    <div class="flex flex-col md:flex-row items-stretch justify-center gap-4 md:gap-8">
+                        <div id="analyzer.py" class="component-card bg-white p-4 rounded-lg border-2 border-orange-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 analyzer.py</h4>
+                            <p class="font-semibold text-sm mt-1">📦 PageAnalyzer</p>
+                        </div>
+                        <div id="searcher.py" class="component-card bg-white p-4 rounded-lg border-2 border-orange-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 searcher.py</h4>
+                            <p class="font-semibold text-sm mt-1">📦 TranslationSearcher</p>
+                        </div>
+                        <div id="connections.py" class="component-card bg-white p-4 rounded-lg border-2 border-orange-300 shadow-md cursor-pointer">
+                            <h4 class="font-bold text-lg">📄 connections.py</h4>
+                            <p class="font-semibold text-sm mt-1" data-i18n="connections-desc">🔧 DB 연결 함수</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Translation dictionary
+        const translations = {
+            ko: {
+                "main-title": "AEM QA System 컴포넌트 아키텍처",
+                "nav-config": "설정",
+                "nav-collection": "데이터 수집",
+                "nav-processing": "데이터 처리",
+                "nav-analysis": "분석 및 검색",
+                "intro-title": "프로세스 블록별 아키텍처",
+                "intro-desc": "시스템을 구성하는 모든 소프트웨어 컴포넌트의 관계와 상호작용을 시각적으로 보여줍니다. 각 컴포넌트 카드를 클릭하면 관련된 요소들이 강조 표시됩니다.",
+                "block1-title": "블록 1: 설정 및 공통 모듈",
+                "config-constants": "⚙️ 상수 (Constants)",
+                "config-other": "- (기타 모든 경로 및 설정)",
+                "all-components": "모든 시스템 컴포넌트",
+                "block2-title": "블록 2: 데이터 수집 프로세스",
+                "collector-components": "Collector App Components",
+                "app-py-desc": "Streamlit UI 렌더링 및 사용자 입력 처리",
+                "pipeline-desc": "전체 수집 프로세스 조율",
+                "block3-title": "블록 3: 데이터 처리 파이프라인",
+                "admin-components": "AEM QA System Components (Admin)",
+                "block4-title": "블록 4: QA 분석 및 검색",
+                "qa-components": "AEM QA System Components (QA Workstation)",
+                "connections-desc": "🔧 DB 연결 함수"
+            },
+            en: {
+                "main-title": "AEM QA System Component Architecture",
+                "nav-config": "Configuration",
+                "nav-collection": "Data Collection",
+                "nav-processing": "Data Processing",
+                "nav-analysis": "Analysis & Search",
+                "intro-title": "Architecture by Process Block",
+                "intro-desc": "Visually shows the relationships and interactions of all software components that make up the system. Click on each component card to highlight related elements.",
+                "block1-title": "Block 1: Configuration & Common Modules",
+                "config-constants": "⚙️ Constants",
+                "config-other": "- (All other paths and settings)",
+                "all-components": "All System Components",
+                "block2-title": "Block 2: Data Collection Process",
+                "collector-components": "Collector App Components",
+                "app-py-desc": "Streamlit UI rendering and user input processing",
+                "pipeline-desc": "Orchestrating the entire collection process",
+                "block3-title": "Block 3: Data Processing Pipeline",
+                "admin-components": "AEM QA System Components (Admin)",
+                "block4-title": "Block 4: QA Analysis & Search",
+                "qa-components": "AEM QA System Components (QA Workstation)",
+                "connections-desc": "🔧 DB connection functions"
+            },
+            ja: {
+                "main-title": "AEM QAシステム コンポーネントアーキテクチャ",
+                "nav-config": "設定",
+                "nav-collection": "データ収集",
+                "nav-processing": "データ処理",
+                "nav-analysis": "分析・検索",
+                "intro-title": "プロセスブロック別アーキテクチャ",
+                "intro-desc": "システムを構成するすべてのソフトウェアコンポーネントの関係と相互作用を視覚的に示します。各コンポーネントカードをクリックすると関連要素がハイライト表示されます。",
+                "block1-title": "ブロック1: 設定・共通モジュール",
+                "config-constants": "⚙️ 定数 (Constants)",
+                "config-other": "- (その他すべてのパス・設定)",
+                "all-components": "すべてのシステムコンポーネント",
+                "block2-title": "ブロック2: データ収集プロセス",
+                "collector-components": "Collector App Components",
+                "app-py-desc": "Streamlit UIレンダリング・ユーザー入力処理",
+                "pipeline-desc": "全体収集プロセスの調整",
+                "block3-title": "ブロック3: データ処理パイプライン",
+                "admin-components": "AEM QA System Components (Admin)",
+                "block4-title": "ブロック4: QA分析・検索",
+                "qa-components": "AEM QA System Components (QA Workstation)",
+                "connections-desc": "🔧 DB接続関数"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function updateContent(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                    
+                    // Handle the special case for intro-desc with HTML content
+                    if (key === 'intro-desc') {
+                        const text = translations[lang][key];
+                        const parts = text.split('각 컴포넌트 카드를 클릭');
+                        if (parts.length === 2) {
+                            element.innerHTML = parts[0] + '<span class="font-semibold text-sky-600">각 컴포넌트 카드를 클릭</span>' + parts[1];
+                        }
+                        
+                        // For English
+                        const englishParts = text.split('Click on each component card');
+                        if (englishParts.length === 2) {
+                            element.innerHTML = englishParts[0] + '<span class="font-semibold text-sky-600">Click on each component card</span>' + englishParts[1];
+                        }
+                        
+                        // For Japanese
+                        const japaneseParts = text.split('各コンポーネントカードをクリック');
+                        if (japaneseParts.length === 2) {
+                            element.innerHTML = japaneseParts[0] + '<span class="font-semibold text-sky-600">各コンポーネントカードをクリック</span>' + japaneseParts[1];
+                        }
+                    }
+                }
+            });
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            currentLang = lang;
+        }
+
+        function updateLanguageButtons(activeLang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === activeLang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Language switching functionality
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    updateContent(lang);
+                    updateLanguageButtons(lang);
+                });
+            });
+
+            // Component highlighting functionality
+            const mainContainer = document.getElementById('main-container');
+            const allCards = document.querySelectorAll('.component-card');
+            const allArrows = document.querySelectorAll('.arrow');
+
+            const relationships = {
+                'config.py': ['all'],
+                'app.py': ['collection_pipeline.py'],
+                'collection_pipeline.py': ['aem_collector.py', 'package_builder.py'],
+                'admin_ingestion.py': ['data_ingestor.py'],
+                'admin_processing.py': ['utlimate_tm_builder.py'],
+                'utlimate_tm_builder.py': ['chroma_indexer.py'],
+                'admin_analysis.py': ['connections.py'],
+                'admin_monitoring.py': ['connections.py'],
+                'qa_dashboard.py': ['analyzer.py'],
+                'qa_search.py': ['searcher.py'],
+                'analyzer.py': ['connections.py'],
+                'searcher.py': ['connections.py']
+            };
+
+            mainContainer.addEventListener('click', (event) => {
+                const clickedCard = event.target.closest('.component-card');
+
+                if (clickedCard && clickedCard.id) {
+                    const currentlyActive = document.querySelector('.component-card.highlight');
+                    if (currentlyActive === clickedCard) {
+                        resetHighlights();
+                    } else {
+                        highlightComponentAndRelations(clickedCard.id);
+                    }
+                } else if (!clickedCard) {
+                    resetHighlights();
+                }
+            });
+
+            function resetHighlights() {
+                allCards.forEach(c => {
+                    c.classList.remove('highlight', 'dimmed');
+                });
+                allArrows.forEach(a => a.classList.remove('highlight'));
+            }
+
+            function highlightComponentAndRelations(componentId) {
+                resetHighlights();
+                
+                const relatedComponents = new Set([componentId]);
+                
+                if (relationships[componentId]) {
+                    relationships[componentId].forEach(dep => relatedComponents.add(dep));
+                }
+
+                for (const [caller, dependencies] of Object.entries(relationships)) {
+                    if (dependencies.includes(componentId)) {
+                        relatedComponents.add(caller);
+                    }
+                }
+                
+                const dbConsumers = [
+                    'analyzer.py', 'searcher.py', 'data_ingestor.py', 
+                    'utlimate_tm_builder.py', 'chroma_indexer.py',
+                    'admin_analysis.py', 'admin_monitoring.py'
+                ];
+
+                if (dbConsumers.includes(componentId)) {
+                    relatedComponents.add('connections.py');
+                }
+
+                allCards.forEach(card => {
+                    if (relatedComponents.has(card.id) || relatedComponents.has('all')) {
+                        card.classList.add('highlight');
+                    } else {
+                        card.classList.add('dimmed');
+                    }
+                });
+
+                allArrows.forEach(arrow => {
+                    const source = arrow.dataset.source ? arrow.dataset.source.split(' ') : [];
+                    const target = arrow.dataset.target ? arrow.dataset.target.split(' ') : [];
+                    if ( (source.some(s => relatedComponents.has(s)) && target.some(t => relatedComponents.has(t))) ) {
+                        arrow.classList.add('highlight');
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
